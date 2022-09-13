@@ -8,7 +8,7 @@ namespace TranspotationAPI.Config
     {
         public MappingConfig()
         {
-            CreateMap<Account, GetUserInformationResDto>().ReverseMap();
+            CreateMap<Account, GetUserInformationResDto>().ReverseMap() ;
         }
     }   
 
