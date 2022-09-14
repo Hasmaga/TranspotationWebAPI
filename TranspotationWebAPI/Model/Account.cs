@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TranspotationWebAPI.Model;
 
 namespace TranspotationAPI.Model
 {
@@ -51,5 +52,8 @@ namespace TranspotationAPI.Model
             this.email = email;
             this.name = name;
         }
+
+        public List<OrderDetail> OrderDetails { get; set; }
+
     }
 }
