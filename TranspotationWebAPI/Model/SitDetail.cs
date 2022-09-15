@@ -18,9 +18,6 @@ namespace TranspotationWebAPI.Model
         public String Name { get; set; }
         [Column("status", Order = 4)]
         public Boolean status { get; set; }
-
-
-
         public SitDetail(int sitId, int trip_Id, string name, bool status)
         {
             this.sitId = sitId;
@@ -28,7 +25,7 @@ namespace TranspotationWebAPI.Model
             Name = name;
             this.status = status;
         }
-        public OrderDetail OrderDetails { get; set; }
-    }
-    
+        public OrderDetail orderDetail { get; set; }        
+        public Trip trip { get; set; }
+    }    
 }

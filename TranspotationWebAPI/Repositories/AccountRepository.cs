@@ -6,6 +6,7 @@ using TranspotationAPI.Enum;
 using TranspotationAPI.Model;
 using TranspotationAPI.Model.Dto;
 
+
 namespace TranspotationAPI.Repositories
 {
     public class AccountRepository : IAccountRepository
@@ -47,6 +48,13 @@ namespace TranspotationAPI.Repositories
             _logger.LogInformation($"Get User Information By Id: {accountId}");
             Account acc = await this.FindAccountByIdAsync(accountId);           
             return _mapper.Map<GetUserInformationResDto>(acc);         
-        }       
+        }
+
+        public async Task<List<Account>> GetAllUserInformationAsync()
+        {
+            _logger.LogInformation($"Get all User.");
+            List<Account> listAcc = await _db.Accounts.ToListAsync();
+            return _mapper.Map<List<Account>>(listAcc);
+        }
     }
 }

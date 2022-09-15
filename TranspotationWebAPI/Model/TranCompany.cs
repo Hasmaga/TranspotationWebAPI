@@ -27,5 +27,6 @@ namespace TranspotationWebAPI.Model
             this.companyAddress = companyAddress;
             this.contact = contact;
         }
+        public List<Trip> trips { get; set; }
     }
 }

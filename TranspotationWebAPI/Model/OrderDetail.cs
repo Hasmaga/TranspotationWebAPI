@@ -42,10 +42,9 @@ namespace TranspotationWebAPI.Model
             this.tripId = tripId;
             this.status = status;
 
-        }
-        
-        public Account Account { get; set; }
-        public List<SitDetail> SitDetails { get; set; }
+        }     
+        public Account account { get; set; }
+        public List<SitDetail> sitDetails { get; set; }
 
     }
 }

@@ -8,6 +8,7 @@ using TranspotationAPI.Model;
 using TranspotationAPI.Model.Dto;
 using TranspotationAPI.Repositories;
 
+
 namespace TranspotationAPI.Controllers
 {
     [Route("AccountAPI/[controller]")]
@@ -40,6 +41,21 @@ namespace TranspotationAPI.Controllers
                 return NotFound(ErrorCode.ACCOUNT_NOT_FOUND);
             }
         }
-        
+
+        [HttpGet]
+        [Route("GetAllUser")]
+        public async Task<ActionResult<List<Account>>> GetAllUserInformationAsync()
+        {
+            _logger.LogInformation($"Get All User Information API");
+            try
+            {
+                List<Account> listAcc = await _accountRepository.GetAllUserInformationAsync();
+                return Ok(listAcc);
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+        }
     }
 }
