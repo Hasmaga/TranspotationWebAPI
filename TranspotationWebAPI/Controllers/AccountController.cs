@@ -11,6 +11,7 @@ using TranspotationAPI.Repositories;
 
 namespace TranspotationAPI.Controllers
 {
+    // To create AccountAPI for front end to use
     [Route("AccountAPI/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -25,7 +26,7 @@ namespace TranspotationAPI.Controllers
             _logger = logger;
             
         }
-        
+        // Get user information by Id
         [HttpGet]
         [Route("{accountId}")]
         public async Task<ActionResult<GetUserInformationResDto>> GetUserInformationByIdAsync(int accountId)
@@ -42,6 +43,7 @@ namespace TranspotationAPI.Controllers
             }
         }
 
+        // Get all user information
         [HttpGet]
         [Route("GetAllUser")]
         public async Task<ActionResult<List<Account>>> GetAllUserInformationAsync()

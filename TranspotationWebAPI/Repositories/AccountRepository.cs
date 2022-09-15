@@ -9,6 +9,7 @@ using TranspotationAPI.Model.Dto;
 
 namespace TranspotationAPI.Repositories
 {
+    //For controller to use
     public class AccountRepository : IAccountRepository
     {
         // Add ApplicationDbContext
@@ -49,7 +50,7 @@ namespace TranspotationAPI.Repositories
             Account acc = await this.FindAccountByIdAsync(accountId);           
             return _mapper.Map<GetUserInformationResDto>(acc);         
         }
-
+        // Get All Account's Info
         public async Task<List<Account>> GetAllUserInformationAsync()
         {
             _logger.LogInformation($"Get all User.");

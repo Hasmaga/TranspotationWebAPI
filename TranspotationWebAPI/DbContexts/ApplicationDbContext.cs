@@ -6,6 +6,7 @@ using TranspotationWebAPI.Model;
 
 namespace TranspotationAPI.DbContexts
 {
+    // For create database and table for the Model
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -23,11 +24,17 @@ namespace TranspotationAPI.DbContexts
                 Console.WriteLine(ex.Message);
             }
         }
-        public DbSet<Account> Accounts { get; set; }       
+        // Create Account Table
+        public DbSet<Account> Accounts { get; set; }
+        // Create Destinations Table
         public DbSet<Destination> Destinations { get; set; }
+        // Create OrderDetails Table
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        // Create SitDetails Table
         public DbSet<SitDetail> SitDetails { get; set; }
+        // Create TranCompanys Table
         public DbSet<TranCompany> TranCompanys { get; set; }
+        // Create Trips Table
         public DbSet<Trip> Trips { get; set; }
     }
 }
