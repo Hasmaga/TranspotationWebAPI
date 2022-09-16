@@ -9,40 +9,40 @@ namespace TranspotationWebAPI.Model
         [Key]                                                   //This will tell this attribute is the Key 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]   //This will tell this attribute is not insertable (Tự động tăng dần)
         [Required]
-        [Column("Trip_Id", Order = 1)]
-        public int tripId { get; set; }
+        [Column("tripId", Order = 1)]
+        public int tripId { get; set; }        
 
-        [Column("Sid_Id", Order = 2)]
-        public int sidId { get; set; }
+        [Column("depId", Order = 2)]
+        public int depId { get; set; }
 
-        [Column("Begin Time", Order = 3)]
-        public DateTime beginTime { get; set; }
+        [Column("desId", Order = 3)]
+        public int desId { get; set; }
 
-        [Column("End Time", Order = 4)]
-        public DateTime endTime { get; set; }
+        [Column("beginTime", Order = 4)]
+        public DateTime beginTime { get; set; }        
 
-        [Column("Price", Order = 5)]
+        [Column("price", Order = 5)]
         public int price { get; set; }
 
-        [Column("Description", Order = 6)]
+        [Column("sescription", Order = 6)]
         public string description { get; set; }
 
-        [Column("Company_Id", Order = 7)]
+        [Column("companyId", Order = 7)]
         public int companyId { get; set; }
 
-        public Trip(int tripId, int sidId, DateTime beginTime, DateTime endTime, int price, string description, int companyId )
+        public Trip(int tripId, int depId, int desId, DateTime beginTime, int price, String description, int companyId)
         {
-            this.tripId = tripId;
-            this.sidId = sidId;
+            this.tripId = tripId;            
+            this.depId = depId;
+            this.desId = desId;
             this.beginTime = beginTime;
-            this.endTime = endTime;
             this.price = price;
             this.description = description;
             this.companyId = companyId;
         }
 
         public TranCompany tranCompany { get; set; }
-        public SitDetail sitDetail { get; set; }
+        public List<SitDetail> sitDetails { get; set; }
         public List<Depart> listDepartments { get; set; }
         public List<Destination> listDestinations { get; set; }
     }

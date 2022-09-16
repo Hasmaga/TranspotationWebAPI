@@ -5,7 +5,7 @@ using TranspotationAPI.DbContexts;
 using TranspotationAPI.Enum;
 using TranspotationAPI.Model;
 using TranspotationAPI.Model.Dto;
-
+using TranspotationWebAPI.Model.Dto;
 
 namespace TranspotationAPI.Repositories
 {
@@ -51,11 +51,11 @@ namespace TranspotationAPI.Repositories
             return _mapper.Map<GetUserInformationResDto>(acc);         
         }
         // Get All Account's Info
-        public async Task<List<Account>> GetAllUserInformationAsync()
+        public async Task<List<GetAllUserInformationResDto>> GetAllUserInformationAsync()
         {
             _logger.LogInformation($"Get all User.");
             List<Account> listAcc = await _db.Accounts.ToListAsync();
-            return _mapper.Map<List<Account>>(listAcc);
+            return _mapper.Map<List<GetAllUserInformationResDto>>(listAcc);
         }
     }
 }

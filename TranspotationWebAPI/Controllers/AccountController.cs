@@ -7,7 +7,7 @@ using TranspotationAPI.Enum;
 using TranspotationAPI.Model;
 using TranspotationAPI.Model.Dto;
 using TranspotationAPI.Repositories;
-
+using TranspotationWebAPI.Model.Dto;
 
 namespace TranspotationAPI.Controllers
 {
@@ -46,12 +46,12 @@ namespace TranspotationAPI.Controllers
         // Get all user information
         [HttpGet]
         [Route("GetAllUser")]
-        public async Task<ActionResult<List<Account>>> GetAllUserInformationAsync()
+        public async Task<ActionResult<List<GetAllUserInformationResDto>>> GetAllUserInformationAsync()
         {
             _logger.LogInformation($"Get All User Information API");
             try
             {
-                List<Account> listAcc = await _accountRepository.GetAllUserInformationAsync();
+                List<GetAllUserInformationResDto> listAcc = await _accountRepository.GetAllUserInformationAsync();
                 return Ok(listAcc);
             } catch (Exception ex)
             {

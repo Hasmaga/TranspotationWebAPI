@@ -1,6 +1,6 @@
 ﻿using TranspotationAPI.Model;
 using TranspotationAPI.Model.Dto;
-
+using TranspotationWebAPI.Model.Dto;
 
 namespace TranspotationAPI.Repositories
 {
@@ -9,6 +9,6 @@ namespace TranspotationAPI.Repositories
     {
         Task<GetUserInformationResDto> GetUserInformationByIdAsync(int accountId);
         
-        Task<List<Account>> GetAllUserInformationAsync();
+        Task<List<GetAllUserInformationResDto>> GetAllUserInformationAsync();
     }
 }
