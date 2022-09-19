@@ -5,7 +5,6 @@ namespace TranspotationWebAPI.Model
 {
    [Table("Department", Schema = "dbo")]
     public class Depart
-
     {
         [Key]                                                   //This will tell this attribute is the Key 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]   //This will tell this attribute is not insertable (Tự động tăng dần)
@@ -18,22 +17,11 @@ namespace TranspotationWebAPI.Model
         
         [Column("departmetAddress", Order = 3)]
         public String departmentAddress { get; set; }
-        
-        [Column("beginTime", Order = 4)]
-        public DateTime beginTime { get; set; }
-
-        [Column("tripId", Order = 5)]
-        public int tripId { get; set; }
-
-        public Depart(int depId, string name, string departmentAddress, DateTime beginTime, int tripId)
+        public Depart(int depId, string name, string departmentAddress)
         {
             this.depId = depId;
             this.name = name;
-            this.departmentAddress = departmentAddress;
-            this.beginTime = beginTime;
-            this.tripId = tripId;
-        }
-        public Trip trip { get; set; }
+            this.departmentAddress = departmentAddress;                 
+        }        
     }
-
 }

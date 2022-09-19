@@ -29,7 +29,7 @@ namespace TranspotationAPI.DbContexts
         // Create Destinations Table
         public DbSet<Destination> Destinations { get; set; }
         // Create OrderDetails Table
-        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Order> OrderDetails { get; set; }
         // Create SitDetails Table
         public DbSet<SitDetail> SitDetails { get; set; }
         // Create TranCompanys Table

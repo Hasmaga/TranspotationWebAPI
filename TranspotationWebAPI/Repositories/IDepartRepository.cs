@@ -1,6 +1,6 @@
 ﻿namespace TranspotationWebAPI.Repositories
 {
-    public class IDepartRepository
+    public interface IDepartRepository
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace TranspotationWebAPI.Repositories
 {
-    public class OrderDetailRepository
+    public class IOrderRepository
     {
     }
 }

@@ -25,7 +25,7 @@ namespace TranspotationWebAPI.Model
             Name = name;
             this.status = status;
         }
-        public OrderDetail orderDetail { get; set; }        
+        public Order order { get; set; }        
         public Trip trip { get; set; }
     }    
 }

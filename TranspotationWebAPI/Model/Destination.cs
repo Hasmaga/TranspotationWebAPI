@@ -23,9 +23,6 @@ namespace TranspotationWebAPI.Model
             this.desId = desId;
             this.name = name;
             this.destinationAddress = destinationAddress;
-
-        }
-        public Trip trip { get; set; }
+        }        
     }
-
 }

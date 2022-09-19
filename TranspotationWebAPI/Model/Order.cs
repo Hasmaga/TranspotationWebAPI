@@ -5,8 +5,8 @@ using TranspotationAPI.Model;
 
 namespace TranspotationWebAPI.Model
 {
-    [Table("OrderDetail", Schema = "dbo")]
-    public class OrderDetail
+    [Table("Order", Schema = "dbo")]
+    public class Order
     {
         [Key]                                                   //This will tell this attribute is the Key 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]   //This will tell this attribute is not insertable (Tự động tăng dần)
@@ -32,7 +32,7 @@ namespace TranspotationWebAPI.Model
         [Column("status", Order = 7)]
         public Boolean status { get; set; }
 
-        public OrderDetail(int orderId, int accountId, int sitDetailId, double totalPrice, DateTime createdDate, int tripId, bool status)
+        public Order(int orderId, int accountId, int sitDetailId, double totalPrice, DateTime createdDate, int tripId, bool status)
         {
             this.orderId = orderId;
             this.accountId = accountId;
@@ -45,6 +45,5 @@ namespace TranspotationWebAPI.Model
         }     
         public Account account { get; set; }
         public List<SitDetail> sitDetails { get; set; }
-
     }
 }

@@ -24,7 +24,7 @@ namespace TranspotationWebAPI.Model
         [Column("price", Order = 5)]
         public int price { get; set; }
 
-        [Column("sescription", Order = 6)]
+        [Column("description", Order = 6)]
         public string description { get; set; }
 
         [Column("companyId", Order = 7)]
@@ -40,12 +40,10 @@ namespace TranspotationWebAPI.Model
             this.description = description;
             this.companyId = companyId;
         }
-
         public TranCompany tranCompany { get; set; }
         public List<SitDetail> sitDetails { get; set; }
-        public List<Depart> listDepartments { get; set; }
-        public List<Destination> listDestinations { get; set; }
+        public Depart depart { get; set; }
+        public Destination destination { get; set; }
     }
-
 }
 
