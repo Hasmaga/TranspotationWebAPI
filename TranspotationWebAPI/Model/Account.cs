@@ -42,7 +42,7 @@ namespace TranspotationAPI.Model
         public Role Role { get; set; }
 
         //Contructor
-        public Account(int accountId, String userName, String password, String? phoneNumber, String email, String? name, String? token)
+        public Account(int accountId, String userName, String password, String? phoneNumber, String? email, String? name, String? token)
         {
             this.accountId = accountId;
             this.userName = userName;

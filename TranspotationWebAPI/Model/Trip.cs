@@ -16,7 +16,7 @@ namespace TranspotationWebAPI.Model
         public DateTime? beginTime { get; set; }        
 
         [Column("price", Order = 3)]
-        public int price { get; set; }
+        public int? price { get; set; }
 
         [Column("description", Order = 4)]
         public string? description { get; set; }
@@ -28,7 +28,7 @@ namespace TranspotationWebAPI.Model
         public Destination Destination { get; set; }
         
         //Contructor
-        public Trip(int tripId, DateTime? beginTime, int price, string? description)
+        public Trip(int tripId, DateTime? beginTime, int? price, string? description)
         {
             this.tripId = tripId;
             this.beginTime = beginTime;

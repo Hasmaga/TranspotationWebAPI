@@ -15,10 +15,10 @@ namespace TranspotationWebAPI.Model
         [Column("name", Order = 2)]
         public String name { get; set; }
         [Column("status", Order = 3)]
-        public Boolean status { get; set; }        
+        public Boolean? status { get; set; }        
 
         //Contructor
-        public SitDetail(int sitId, string name, bool status)
+        public SitDetail(int sitId, string name, Boolean? status)
         {
             this.sitId = sitId;            
             this.name = name;
