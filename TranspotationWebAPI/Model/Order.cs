@@ -12,38 +12,28 @@ namespace TranspotationWebAPI.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]   //This will tell this attribute is not insertable (Tự động tăng dần)
         [Required]
         [Column("orderId" , Order = 1)]
-        public int orderId { get; set; }
-
-        [Column("accountId" , Order = 2) ]
-        public int accountId { get; set; }
+        public Guid orderId { get; set; }       
         
-        [Column("sitDetailId", Order = 3)]
-        public int sitDetailId { get; set; }
-        
-        [Column("totalPrice", Order = 4)]
+        [Column("totalPrice", Order = 2)]
         public double totalPrice { get; set; }
         
-        [Column("createdDate", Order = 5)]
-        public DateTime createdDate { get; set; }
+        [Column("createdDate", Order = 3)]
+        public DateTime createdDate { get; set; }      
         
-        [Column("tripId", Order = 6)]
-        public int tripId { get; set; }
-        
-        [Column("status", Order = 7)]
+        [Column("status", Order = 4)]
         public Boolean status { get; set; }
 
-        public Order(int orderId, int accountId, int sitDetailId, double totalPrice, DateTime createdDate, int tripId, bool status)
-        {
-            this.orderId = orderId;
-            this.accountId = accountId;
-            this.sitDetailId = sitDetailId;
-            this.totalPrice = totalPrice;
-            this.createdDate = createdDate;
-            this.tripId = tripId;
-            this.status = status;
+        //Relationship table
+        public Account Account { get; set; }
+        public List<SitDetail> SitDetails { get; set; }
 
-        }     
-        public Account account { get; set; }
-        public List<SitDetail> sitDetails { get; set; }
+        //Contructor
+        public Order(Guid orderId, double totalPrice, DateTime createdDate, bool status)
+        {
+            this.orderId = orderId;           
+            this.totalPrice = totalPrice;
+            this.createdDate = createdDate;            
+            this.status = status;
+        }       
     }
 }

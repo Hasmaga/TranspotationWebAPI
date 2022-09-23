@@ -33,7 +33,7 @@ namespace TranspotationAPI.Repositories
         {
             _logger.LogInformation($"Find Account By Id: {accountId}");
 
-            var account = await _db.Accounts.FindAsync(accountId);
+            var account = await _db.Account.FindAsync(accountId);
             if (account == null)
             {
                 _logger.LogError($"Account not found with id:{accountId} at {DateTime.UtcNow.ToLongTimeString}");
@@ -54,7 +54,7 @@ namespace TranspotationAPI.Repositories
         public async Task<List<GetAllUserInformationResDto>> GetAllUserInformationAsync()
         {
             _logger.LogInformation($"Get all User.");
-            List<Account> listAcc = await _db.Accounts.ToListAsync();
+            List<Account> listAcc = await _db.Account.ToListAsync();
             return _mapper.Map<List<GetAllUserInformationResDto>>(listAcc);
         }
     }

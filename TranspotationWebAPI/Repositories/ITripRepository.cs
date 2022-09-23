@@ -1,6 +1,7 @@
 ﻿namespace TranspotationWebAPI.Repositories
 {
-    public class ITripRepository
+    public interface ITripRepository
     {
+        
     }
 }

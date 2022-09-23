@@ -11,21 +11,22 @@ namespace TranspotationWebAPI.Model
         [Required]
         [Column("sitId", Order = 1)]
         public int sitId { get; set; }
-
-        [Column("trip_Id", Order = 2)]
-        public int trip_Id { get; set; }
+        
         [Column("name", Order = 3)]
-        public String Name { get; set; }
+        public String name { get; set; }
         [Column("status", Order = 4)]
         public Boolean status { get; set; }
-        public SitDetail(int sitId, int trip_Id, string name, bool status)
-        {
-            this.sitId = sitId;
-            this.trip_Id = trip_Id;
-            Name = name;
-            this.status = status;
-        }
+        //Relationship Table
         public Order order { get; set; }        
         public Trip trip { get; set; }
+
+        //Contructor
+        public SitDetail(int sitId, string name, bool status)
+        {
+            this.sitId = sitId;            
+            this.name = name;
+            this.status = status;
+        }
+        
     }    
 }

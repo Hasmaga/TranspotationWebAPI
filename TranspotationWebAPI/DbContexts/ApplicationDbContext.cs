@@ -25,16 +25,21 @@ namespace TranspotationAPI.DbContexts
             }
         }
         // Create Account Table
-        public DbSet<Account> Accounts { get; set; }
-        // Create Destinations Table
-        public DbSet<Destination> Destinations { get; set; }
-        // Create OrderDetails Table
-        public DbSet<Order> OrderDetails { get; set; }
-        // Create SitDetails Table
-        public DbSet<SitDetail> SitDetails { get; set; }
-        // Create TranCompanys Table
-        public DbSet<TranCompany> TranCompanys { get; set; }
-        // Create Trips Table
-        public DbSet<Trip> Trips { get; set; }
+        public DbSet<Account> Account { get; set; }
+        // Create Depart Table
+        public DbSet<Depart> Depart { get; set; }
+        // Create Destination Table
+        public DbSet<Destination> Destination { get; set; }
+        // Create Order Table
+        public DbSet<Order> Order { get; set; }
+        // Create Role Table
+        public DbSet<Role> Role { get; set; }
+        // Create SitDetail Table
+        public DbSet<SitDetail> SitDetail { get; set; }
+        // Create TranCompany Table
+        public DbSet<TranCompany> TranCompany { get; set; }
+        // Create Trip Table
+        public DbSet<Trip> Trip { get; set; }
+
     }
 }
