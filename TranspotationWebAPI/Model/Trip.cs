@@ -28,7 +28,7 @@ namespace TranspotationWebAPI.Model
         public Destination Destination { get; set; }
         
         //Contructor
-        public Trip(int tripId, DateTime beginTime, int price, string description)
+        public Trip(int tripId, DateTime? beginTime, int price, string? description)
         {
             this.tripId = tripId;
             this.beginTime = beginTime;

@@ -28,7 +28,7 @@ namespace TranspotationWebAPI.Model
         public List<SitDetail> SitDetails { get; set; }
 
         //Contructor
-        public Order(int orderId, double totalPrice, DateTime createdDate, bool status)
+        public Order(int orderId, double? totalPrice, DateTime? createdDate, bool? status)
         {
             this.orderId = orderId;           
             this.totalPrice = totalPrice;

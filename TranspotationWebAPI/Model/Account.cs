@@ -32,7 +32,7 @@ namespace TranspotationAPI.Model
         public String? email { get; set; }        
         
         [Column("name", Order = 7)]
-        public String name { get; set; }
+        public String? name { get; set; }
 
         [Column("token", Order = 8)]
         public String? token { get; set; }
@@ -42,7 +42,7 @@ namespace TranspotationAPI.Model
         public Role Role { get; set; }
 
         //Contructor
-        public Account(int accountId, string userName, string password, string phoneNumber, string email, string name, string token)
+        public Account(int accountId, String userName, String password, String? phoneNumber, String email, String? name, String? token)
         {
             this.accountId = accountId;
             this.userName = userName;

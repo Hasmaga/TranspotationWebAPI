@@ -23,7 +23,7 @@ namespace TranspotationWebAPI.Model
         public List<Trip> Trips { get; set; }
 
         //Contructor
-        public TranCompany(int tranCompanyId, string name, string companyAddress, string contact)
+        public TranCompany(int tranCompanyId, string name, string? companyAddress, string? contact)
         {
             this.tranCompanyId = tranCompanyId;
             this.name = name;
