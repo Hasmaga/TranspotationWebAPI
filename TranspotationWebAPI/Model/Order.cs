@@ -15,13 +15,13 @@ namespace TranspotationWebAPI.Model
         public int orderId { get; set; }       
         
         [Column("totalPrice", Order = 2)]
-        public double totalPrice { get; set; }
+        public double? totalPrice { get; set; }
         
         [Column("createdDate", Order = 3)]
-        public DateTime createdDate { get; set; }      
+        public DateTime? createdDate { get; set; }      
         
         [Column("status", Order = 4)]
-        public Boolean status { get; set; }
+        public Boolean? status { get; set; }
 
         //Relationship table
         public Account Account { get; set; }

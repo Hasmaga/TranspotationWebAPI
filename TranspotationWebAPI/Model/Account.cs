@@ -20,7 +20,7 @@ namespace TranspotationAPI.Model
         public String password { get; set; }               
         
         [Column("phoneNumber", Order = 5)]
-        public String phoneNumber { get; set; }
+        public String? phoneNumber { get; set; }
 
         [RegularExpression(
             @"(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)",
@@ -29,13 +29,13 @@ namespace TranspotationAPI.Model
             )
         ]
         [Column("email", Order = 6)]
-        public String email { get; set; }        
+        public String? email { get; set; }        
         
         [Column("name", Order = 7)]
         public String name { get; set; }
 
         [Column("token", Order = 8)]
-        public String token { get; set; }
+        public String? token { get; set; }
 
         //Relationship table
         public List<Order> Orders { get; set; }

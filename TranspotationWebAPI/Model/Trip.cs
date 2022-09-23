@@ -13,13 +13,13 @@ namespace TranspotationWebAPI.Model
         public int tripId { get; set; }               
 
         [Column("beginTime", Order = 2)]
-        public DateTime beginTime { get; set; }        
+        public DateTime? beginTime { get; set; }        
 
         [Column("price", Order = 3)]
         public int price { get; set; }
 
         [Column("description", Order = 4)]
-        public string description { get; set; }
+        public string? description { get; set; }
         
         //Relationship table        
         public TranCompany TranCompany { get; set; }

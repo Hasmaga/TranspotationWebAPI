@@ -12,9 +12,9 @@ namespace TranspotationWebAPI.Model
         [Column("sitId", Order = 1)]
         public int sitId { get; set; }
         
-        [Column("name", Order = 3)]
+        [Column("name", Order = 2)]
         public String name { get; set; }
-        [Column("status", Order = 4)]
+        [Column("status", Order = 3)]
         public Boolean status { get; set; }
         //Relationship Table
         public Order order { get; set; }        

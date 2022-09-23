@@ -15,9 +15,9 @@ namespace TranspotationWebAPI.Model
         [Column("name", Order = 2)]
         public String name { get; set; }
         [Column("companyAddress", Order = 3)]
-        public String companyAddress { get; set; }
+        public String? companyAddress { get; set; }
         [Column("contact", Order = 4)]
-        public String contact { get; set; }
+        public String? contact { get; set; }
 
         //Relationship table
         public List<Trip> Trips { get; set; }
