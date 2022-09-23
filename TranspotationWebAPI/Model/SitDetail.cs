@@ -15,10 +15,7 @@ namespace TranspotationWebAPI.Model
         [Column("name", Order = 2)]
         public String name { get; set; }
         [Column("status", Order = 3)]
-        public Boolean status { get; set; }
-        //Relationship Table
-        public Order order { get; set; }        
-        public Trip trip { get; set; }
+        public Boolean status { get; set; }        
 
         //Contructor
         public SitDetail(int sitId, string name, bool status)
