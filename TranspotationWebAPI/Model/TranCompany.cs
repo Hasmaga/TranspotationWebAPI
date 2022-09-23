@@ -10,8 +10,8 @@ namespace TranspotationWebAPI.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]   //This will tell this attribute is not insertable (Tự động tăng dần)
         [Required]
         [Column("companyId", Order = 1)]
-        public Guid tranCompanyId { get; set; }
-
+        public int tranCompanyId { get; set; }
+        
         [Column("name", Order = 2)]
         public String name { get; set; }
         [Column("companyAddress", Order = 3)]
@@ -23,7 +23,7 @@ namespace TranspotationWebAPI.Model
         public List<Trip> Trips { get; set; }
 
         //Contructor
-        public TranCompany(Guid tranCompanyId, string name, string companyAddress, string contact)
+        public TranCompany(int tranCompanyId, string name, string companyAddress, string contact)
         {
             this.tranCompanyId = tranCompanyId;
             this.name = name;

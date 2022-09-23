@@ -12,7 +12,7 @@ namespace TranspotationWebAPI.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]   //This will tell this attribute is not insertable (Tự động tăng dần)
         [Required]
         [Column("orderId" , Order = 1)]
-        public Guid orderId { get; set; }       
+        public int orderId { get; set; }       
         
         [Column("totalPrice", Order = 2)]
         public double totalPrice { get; set; }
@@ -28,7 +28,7 @@ namespace TranspotationWebAPI.Model
         public List<SitDetail> SitDetails { get; set; }
 
         //Contructor
-        public Order(Guid orderId, double totalPrice, DateTime createdDate, bool status)
+        public Order(int orderId, double totalPrice, DateTime createdDate, bool status)
         {
             this.orderId = orderId;           
             this.totalPrice = totalPrice;

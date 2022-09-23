@@ -11,7 +11,7 @@ namespace TranspotationAPI.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]   //This will tell this attribute is not insertable (Tự động tăng dần)
         [Required]                                              //This will tell this attribute is Required (Ko thể null) 
         [Column("accountId", Order = 1)]                        //This will tell the attribute's Name
-        public Guid accountId { get; set; }        
+        public int accountId { get; set; }        
         
         [Column("userName", Order = 2)]
         public String userName { get; set; }        
@@ -42,7 +42,7 @@ namespace TranspotationAPI.Model
         public Role Role { get; set; }
 
         //Contructor
-        public Account(Guid accountId, string userName, string password, string phoneNumber, string email, string name, string token)
+        public Account(int accountId, string userName, string password, string phoneNumber, string email, string name, string token)
         {
             this.accountId = accountId;
             this.userName = userName;

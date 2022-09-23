@@ -10,7 +10,7 @@ namespace TranspotationWebAPI.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]   //This will tell this attribute is not insertable (Tự động tăng dần)
         [Required]
         [Column("tripId", Order = 1)]
-        public Guid tripId { get; set; }               
+        public int tripId { get; set; }               
 
         [Column("beginTime", Order = 2)]
         public DateTime beginTime { get; set; }        
@@ -26,9 +26,9 @@ namespace TranspotationWebAPI.Model
         public List<SitDetail> SitDetails { get; set; }        
         public Depart Depart { get; set; }        
         public Destination Destination { get; set; }
-
+        
         //Contructor
-        public Trip(Guid tripId, DateTime beginTime, int price, string description)
+        public Trip(int tripId, DateTime beginTime, int price, string description)
         {
             this.tripId = tripId;
             this.beginTime = beginTime;
