@@ -13,9 +13,9 @@ namespace TranspotationWebAPI.Model
         public string Address { get; set; }
 
         [Column("LocationId")]
-        public int LocationId { get; set; }
+        public int? LocationId { get; set; }
         public Location Location { get; set; }
-        public Station(string Name, string Address, int LocationId)
+        public Station(string Name, string Address, int? LocationId)
         {
             this.Name = Name;
             this.Address = Address;

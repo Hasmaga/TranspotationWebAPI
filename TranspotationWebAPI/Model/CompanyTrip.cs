@@ -20,23 +20,23 @@ namespace TranspotationWebAPI.Model
         public Company Company { get; set; }
 
         [Column("Status")]
-        public bool Status { get; set; }
+        public bool? Status { get; set; }
 
         [Column("StartTime")]
-        public DateTime StartTime { get; set; }
+        public DateTime? StartTime { get; set; }
 
         [Column("Price")]
-        public int Price { get; set; }
+        public int? Price { get; set; }
 
         [Column("CarTypeId")]
-        public int CarTypeId { get; set; }
+        public int? CarTypeId { get; set; }
         public CarType CarType { get; set; }
 
         [Column("StationId")]
-        public int StationId { get; set; }
+        public int? StationId { get; set; }
         public Station Station { get; set; }
 
-        public CompanyTrip(int? TripId, int? CarId, int? CompanyId, bool Status, DateTime StartTime, int Price, int CarTypeId, int StationId)
+        public CompanyTrip(int? TripId, int? CarId, int? CompanyId, bool? Status, DateTime? StartTime, int? Price, int? CarTypeId, int? StationId)
         {
             this.TripId = TripId;
             this.CarId = CarId;

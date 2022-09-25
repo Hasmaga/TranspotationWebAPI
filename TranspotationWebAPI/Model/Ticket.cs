@@ -10,23 +10,23 @@ namespace TranspotationWebAPI.Model
         public bool Status { get; set; }
 
         [Column("Total")]
-        public int Total { get; set; }
+        public int? Total { get; set; }
 
         [Column("AccountId")]
-        public int AccountId { get; set; }
+        public int? AccountId { get; set; }
         public Account Account { get; set; }
 
         [Column("CompanyTripId")]
-        public int CompanyTripId { get; set; }
+        public int? CompanyTripId { get; set; }
         public CompanyTrip CompanyTrip { get; set; }
 
         [Column("SeatName")]
-        public string SeatName { get; set; }
+        public string? SeatName { get; set; }
 
         [Column("Description")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public Ticket(bool Status, int Total, int AccountId, int CompanyTripId, string SeatName, string Description)
+        public Ticket(bool Status, int? Total, int? AccountId, int? CompanyTripId, string? SeatName, string? Description)
         {
             this.Status = Status;
             this.Total = Total;

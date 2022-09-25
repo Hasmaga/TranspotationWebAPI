@@ -26,17 +26,17 @@ namespace TranspotationWebAPI.Model
         public string Password { get; set; }
 
         [Column("Status")]
-        public bool Status { get; set; }
+        public bool Status { get; set; } = true;
 
         [Column("CompanyId")]
-        public int CompanyId { get; set; }
+        public int? CompanyId { get; set; }
         public Company Company { get; set; }
 
         [Column("RoleId")]
         public int RoleId { get; set; }
         public Role Role { get; set; }
 
-        public Account(string name, string phone, string email, string password, bool status, int companyId, int roleId)
+        public Account(string name, string phone, string email, string password, bool status, int? companyId, int roleId)
         {
             this.Name = name;
             this.Phone = phone;

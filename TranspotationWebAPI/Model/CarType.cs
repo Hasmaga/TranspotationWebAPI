@@ -10,12 +10,12 @@ namespace TranspotationWebAPI.Model
         public string TypeCar { get; set; }
 
         [Column("Name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Column("Image")]
-        public string Image { get; set; }
+        public string? Image { get; set; }
 
-        public CarType (string TypeCar, string Name, string Image)
+        public CarType (string TypeCar, string? Name, string? Image)
         {
             this.TypeCar = TypeCar;
             this.Name = Name;
