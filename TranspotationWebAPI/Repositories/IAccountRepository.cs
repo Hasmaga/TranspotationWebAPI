@@ -1,6 +1,4 @@
-﻿using TranspotationAPI.Model;
-using TranspotationAPI.Model.Dto;
-using TranspotationWebAPI.Model.Dto;
+﻿using TranspotationWebAPI.Model.Dto;
 
 namespace TranspotationAPI.Repositories
 {

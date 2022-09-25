@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using TranspotationAPI.Model;
-using TranspotationAPI.Model.Dto;
+using TranspotationWebAPI.Model;
 using TranspotationWebAPI.Model.Dto;
 
 namespace TranspotationAPI.Config

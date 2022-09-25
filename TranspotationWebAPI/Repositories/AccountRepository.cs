@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TranspotationAPI.DbContexts;
 using TranspotationAPI.Enum;
-using TranspotationAPI.Model;
-using TranspotationAPI.Model.Dto;
+using TranspotationWebAPI.Model;
 using TranspotationWebAPI.Model.Dto;
 
 namespace TranspotationAPI.Repositories

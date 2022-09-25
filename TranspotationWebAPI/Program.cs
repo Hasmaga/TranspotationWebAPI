@@ -8,8 +8,6 @@ using System.Security.Claims;
 using TranspotationAPI.Config;
 using TranspotationAPI.DbContexts;
 using TranspotationAPI.Repositories;
-using TranspotationWebAPI.Model.Dto;
-using TranspotationWebAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(typeof(MappingConfig).Assembly);
 // Add Services and Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IDepartRepository, DepartRepository>();
+
 // Add Authorentication to the project
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -37,7 +35,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 
 // Add DbContext using SQL Server Provider
-var connectionString = $"Data Source=BPAKHANG;Initial Catalog=Transpotation;User ID=Hasmaga;Password=Ankhang28";
+var connectionString = $"Data Source=BPAKHANG;Initial Catalog=Transport;User ID=Hasmaga;Password=Ankhang28";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 

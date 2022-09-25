@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Principal;
 using TranspotationAPI.DbContexts;
 using TranspotationAPI.Enum;
-using TranspotationAPI.Model;
-using TranspotationAPI.Model.Dto;
 using TranspotationAPI.Repositories;
 using TranspotationWebAPI.Model.Dto;
 
@@ -14,6 +13,7 @@ namespace TranspotationAPI.Controllers
     // To create AccountAPI for front end to use
     [Route("AccountAPI/[controller]")]
     [ApiController]
+    
     public class AccountController : ControllerBase
     {
         private IAccountRepository _accountRepository;

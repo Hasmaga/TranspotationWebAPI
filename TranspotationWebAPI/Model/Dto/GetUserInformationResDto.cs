@@ -1,11 +1,12 @@
-﻿namespace TranspotationAPI.Model.Dto
+﻿namespace TranspotationWebAPI.Model.Dto
 {
-    // Dto for Get User Information By Id
     public class GetUserInformationResDto
     {
-        public int accountId { get; set; }
-        public String userName { get; set; }
-        public String phoneNumber { get; set; }
-        public String email { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public bool Status { get; set; }
     }
 }

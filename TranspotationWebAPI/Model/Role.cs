@@ -1,24 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+using TranspotationWebAPI.Model.Abstract;
 
 namespace TranspotationWebAPI.Model
 {
     [Table("Role", Schema = "dbo")]
-    public class Role
+    public class Role : Common
     {
-        [Key]                                                   //This will tell this attribute is the Key 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]   //This will tell this attribute is not insertable (Tự động tăng dần)
-        [Required]
-        [Column("roleId", Order = 1)]
-        public int roleId { get; set; }
-        [Column("roleName", Order = 2)]
-        public String roleName { get; set; }
+        [Column("Name")]
+        public string Name { get; set; }
+        
+        [Column("Authority")]
+        public string Authority { get; set; }
 
-        //Contructor
-        public Role(int roleId, string roleName)
+        public Role(string name, string authority)
         {
-            this.roleId = roleId;
-            this.roleName = roleName;
+            this.Name = name;
+            this.Authority = authority;
         }
     }
 }

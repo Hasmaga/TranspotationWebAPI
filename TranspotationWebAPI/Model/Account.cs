@@ -1,56 +1,50 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TranspotationWebAPI.Model;
+using TranspotationWebAPI.Model.Abstract;
 
-namespace TranspotationAPI.Model
+namespace TranspotationWebAPI.Model
 {
     [Table("Account", Schema = "dbo")]
-    public class Account
+    public class Account : Common
     {
-        [Key]                                                   //This will tell this attribute is the Key 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]   //This will tell this attribute is not insertable (Tự động tăng dần)
-        [Required]                                              //This will tell this attribute is Required (Ko thể null) 
-        [Column("accountId", Order = 1)]                        //This will tell the attribute's Name
-        public int accountId { get; set; }        
-        
-        [Column("userName", Order = 2)]
-        public String userName { get; set; }        
-        
-        [Column("password", Order = 3)]
-        public String password { get; set; }               
-        
-        [Column("phoneNumber", Order = 5)]
-        public String? phoneNumber { get; set; }
+        [Column("Name")]
+        public string Name { get; set; }
 
+        [Column("Phone")]
+        public string Phone { get; set; }
+
+        [Column("Email")]
         [RegularExpression(
             @"(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)",
             //If regex is not match => send error message, defined as below.
             ErrorMessage = "please enter correct url address"
             )
         ]
-        [Column("email", Order = 6)]
-        public String? email { get; set; }        
-        
-        [Column("name", Order = 7)]
-        public String? name { get; set; }
+        public string Email { get; set; }
 
-        [Column("token", Order = 8)]
-        public String? token { get; set; }
+        [Column("Password")]
+        public string Password { get; set; }
 
-        //Relationship table
-        public List<Order> Orders { get; set; }
+        [Column("Status")]
+        public bool Status { get; set; }
+
+        [Column("CompanyId")]
+        public int CompanyId { get; set; }
+        public Company Company { get; set; }
+
+        [Column("RoleId")]
+        public int RoleId { get; set; }
         public Role Role { get; set; }
 
-        //Contructor
-        public Account(int accountId, String userName, String password, String? phoneNumber, String? email, String? name, String? token)
+        public Account(string name, string phone, string email, string password, bool status, int companyId, int roleId)
         {
-            this.accountId = accountId;
-            this.userName = userName;
-            this.password = password;            
-            this.phoneNumber = phoneNumber;
-            this.email = email;
-            this.name = name;
-            this.token = token;
-        }        
+            this.Name = name;
+            this.Phone = phone;
+            this.Email = email;
+            this.Password = password;
+            this.Status = status;
+            this.CompanyId = companyId;
+            this.RoleId = roleId;
+        }
     }
 }
