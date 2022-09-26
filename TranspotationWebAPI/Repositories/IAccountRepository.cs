@@ -5,8 +5,10 @@ namespace TranspotationAPI.Repositories
     //For add interface for AccountRepository
     public interface IAccountRepository
     {
-        Task<GetUserInformationResDto> GetUserInformationByIdAsync(int accountId);
-        
+        Task<GetUserInformationResDto> GetUserInformationByIdAsync(int accountId);        
         Task<List<GetAllUserInformationResDto>> GetAllUserInformationAsync();
+        Task<CreateUpdateUserResDto> CreateUpdateUserAsync(CreateUpdateUserResDto user, int accountId);
+        Task DeleteAccountByIdAsync(int accountId);
+
     }
 }

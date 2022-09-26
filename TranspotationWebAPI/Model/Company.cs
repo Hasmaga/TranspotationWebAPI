@@ -7,18 +7,18 @@ namespace TranspotationWebAPI.Model
     public class Company : Common
     {
         [Column("Name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Column("Phone")]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         [Column("Email")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Column("Address")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
-        public Company (string Name, string Phone, string Email, string Address)
+        public Company (string? Name, string? Phone, string? Email, string? Address)
         {
             this.Name = Name;
             this.Phone = Phone;

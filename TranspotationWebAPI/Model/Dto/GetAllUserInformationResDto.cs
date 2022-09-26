@@ -7,6 +7,8 @@
         public String phoneNumber { get; set; }
         public String email { get; set; }
         public String name { get; set; }
-        public String token { get; set; }
+        public bool status { get; set; }
+        public String roleName { get; set; }
+        public String roleAuthority { get; set; }        
     }
 }

@@ -3,10 +3,12 @@
     public class GetUserInformationResDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public bool Status { get; set; }
+        public String password { get; set; }
+        public String phoneNumber { get; set; }
+        public String email { get; set; }
+        public String name { get; set; }
+        public bool status { get; set; }
+        public String roleName { get; set; }
+        public String roleAuthority { get; set; }
     }
 }

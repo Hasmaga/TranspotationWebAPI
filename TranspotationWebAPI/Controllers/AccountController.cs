@@ -59,5 +59,41 @@ namespace TranspotationAPI.Controllers
                 return NotFound(ErrorCode.ACCOUNT_NOT_FOUND);
             }
         }
+
+        // Add new user
+        [HttpPost]
+        [Route("AddUser")]
+        public async Task<ActionResult> CreateNewUserAsync([FromBody] CreateUpdateUserResDto user)
+        {
+            _logger.LogInformation($"Create New User API");
+            try
+            {
+                int id = 0;
+                await _accountRepository.CreateUpdateUserAsync(user,id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return BadRequest(ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+            return Ok();
+        }
+
+        //Delete user
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<ActionResult> DeleteAccountByIdAsync(int id)
+        {
+            try
+            {
+                await _accountRepository.DeleteAccountByIdAsync(id);                
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return Ok();
+        }
     }
 }

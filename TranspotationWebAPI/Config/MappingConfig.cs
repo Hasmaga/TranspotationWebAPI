@@ -13,6 +13,8 @@ namespace TranspotationAPI.Config
             CreateMap<Account, GetUserInformationResDto>().ReverseMap();
             // Mapping Account and get all user information dto together
             CreateMap<Account, GetAllUserInformationResDto>().ReverseMap();
+            
+            CreateMap<Account, CreateUpdateUserResDto>().ReverseMap();
         }
     }   
 
