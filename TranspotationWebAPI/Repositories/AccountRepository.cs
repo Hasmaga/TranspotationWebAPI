@@ -45,7 +45,21 @@ namespace TranspotationAPI.Repositories
         public async Task<GetUserInformationResDto> GetUserInformationByIdAsync(int accountId)
         {
             _logger.LogInformation($"Get User Information By Id: {accountId}");
-            Account acc = await this.FindAccountByIdAsync(accountId);           
+            var query = (from pd in _db.Account
+                         join pd2 in _db.Role on pd.RoleId equals pd2.Id
+                         where pd2.Id == accountId
+                         select new GetUserInformationResDto
+                         {
+                             Id = pd.Id,
+                             password = pd.Password,
+                             phoneNumber = pd.Phone,
+                             email = pd.Email,
+                             name = pd.Name,
+                             status = pd.Status,
+                             roleName = pd2.Name,
+                             roleAuthority = pd2.Authority
+                         }).FirstOrDefaultAsync();
+            GetUserInformationResDto acc = await query;
             return _mapper.Map<GetUserInformationResDto>(acc);         
         }
         
