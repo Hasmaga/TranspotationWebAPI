@@ -16,6 +16,8 @@ namespace TranspotationAPI.Controllers
     
     public class AccountController : ControllerBase
     {
+        protected CommonResDto _resonse;
+        
         private IAccountRepository _accountRepository;
 
         private readonly ILogger _logger;       
@@ -23,9 +25,11 @@ namespace TranspotationAPI.Controllers
         public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger)
         {
             _accountRepository = accountRepository;
-            _logger = logger;
-            
+            this._resonse = new CommonResDto();
+            _logger = logger;            
         }
+        
+        
         // Get user information by Id
         [HttpGet]
         [Route("{accountId}")]
@@ -63,21 +67,44 @@ namespace TranspotationAPI.Controllers
         // Add new user
         [HttpPost]
         [Route("AddUser")]
-        public async Task<ActionResult> CreateNewUserAsync([FromBody] CreateUpdateUserResDto user)
+        public async Task<ActionResult<CommonResDto>> CreateNewUserAsync([FromBody] CreateUpdateUserResDto user)
         {
             _logger.LogInformation($"Create New User API");
             try
             {
                 int id = 0;
-                await _accountRepository.CreateUpdateUserAsync(user,id);
-                return Ok();
+                CreateUpdateUserResDto acc = await _accountRepository.CreateUpdateUserAsync(user,id);
+                _resonse.Result = acc;
+                _resonse.DisplayMessage = "Create new user successfully";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-                return BadRequest(ErrorCode.ACCOUNT_NOT_FOUND);
+                _resonse.IsSuccess = false;
+                _resonse.ErrorMessage
+                    = new List<string> { ex.ToString() };
             }
-            return Ok();
+            return Ok(_resonse);
+        }
+
+        //Update user
+        [HttpPut]
+        [Route("id")]
+        public async Task<ActionResult<CommonResDto>> UpdateUserByIdAsync(int id, [FromBody] CreateUpdateUserResDto createUpdateUserResDto)
+        {
+            _logger.LogInformation($"Update user API");
+            try
+            {
+                CreateUpdateUserResDto acc = await _accountRepository.CreateUpdateUserAsync(createUpdateUserResDto, id);
+                _resonse.Result = acc;
+                _resonse.DisplayMessage = "Update user successfully";
+            }
+            catch (Exception ex)
+            {
+                _resonse.IsSuccess = false;
+                _resonse.ErrorMessage
+                    = new List<string> { ex.ToString() };
+            }
+            return Ok(_resonse);
         }
 
         //Delete user

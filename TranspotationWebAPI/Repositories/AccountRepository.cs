@@ -30,17 +30,14 @@ namespace TranspotationAPI.Repositories
         // Find Account By Id
         public async Task<Account> FindAccountByIdAsync(int accountId)
         {
-            _logger.LogInformation($"Find Account By Id: {accountId}");
-            try
+            _logger.LogInformation($"Find Account By Id: {accountId}");            
+            Account account = await _db.Account.FindAsync(accountId);
+            if (account == null)
             {
-                Account account = await _db.Account.FindAsync(accountId);
-                return account;
+                _logger.LogInformation($"Account Id: {accountId} not found at {DateTime.UtcNow.ToLongTimeString()}");
+                throw new KeyNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.ToString());
-                return null;
-            }           
+            return account;
         }
 
 
@@ -51,6 +48,7 @@ namespace TranspotationAPI.Repositories
             Account acc = await this.FindAccountByIdAsync(accountId);           
             return _mapper.Map<GetUserInformationResDto>(acc);         
         }
+        
         // Get All Account's Info
         public async Task<List<GetAllUserInformationResDto>> GetAllUserInformationAsync()
         {
@@ -72,6 +70,7 @@ namespace TranspotationAPI.Repositories
             return _mapper.Map<List<GetAllUserInformationResDto>>(listAcc);
         }
 
+        // Create and Update Account
         public async Task<CreateUpdateUserResDto> CreateUpdateUserAsync(CreateUpdateUserResDto user, int accountId)
         {
             Account acc = new Account(user.Phone, user.Email, user.Name, user.Password, user.Status, user.CompanyId, user.roleId);
@@ -91,16 +90,14 @@ namespace TranspotationAPI.Repositories
                 accUpdate.Name = user.Name;
                 accUpdate.Phone = user.Phone;
                 accUpdate.Email = user.Email;
-                accUpdate.Password = user.Password;
-                accUpdate.Status = user.Status;
-                accUpdate.CompanyId = user.CompanyId;
-                accUpdate.RoleId = user.roleId;
+                accUpdate.Password = user.Password;                
                 _db.Account.Update(accUpdate);
             }
             await _db.SaveChangesAsync();
             return _mapper.Map<CreateUpdateUserResDto>(acc);
         }
 
+        //Delete Account
         public async Task DeleteAccountByIdAsync(int accountId)
         {
             _logger.LogInformation($"Delete link by id: {accountId}");
