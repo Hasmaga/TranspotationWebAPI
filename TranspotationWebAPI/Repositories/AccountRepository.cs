@@ -127,5 +127,30 @@ namespace TranspotationAPI.Repositories
             }
             await _db.SaveChangesAsync();
         }
+
+        public async Task<bool> ChangeStatusAccountByIdAsync(int accountId)
+        {
+            _logger.LogInformation($"Change status of account with id: {accountId}");
+            Account account = await this.FindAccountByIdAsync(accountId);
+            if (account != null)
+            {
+                if (account.Status == true)
+                {
+                    account.Status = false;
+                }
+                else
+                {
+                    account.Status = true;
+                }
+                _db.Account.Update(account);
+            }
+            else
+            {
+                _logger.LogError($"Account not found");
+                throw new KeyNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+            await _db.SaveChangesAsync();
+            return true;
+        }
     }
 }

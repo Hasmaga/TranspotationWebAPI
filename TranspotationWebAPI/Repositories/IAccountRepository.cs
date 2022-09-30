@@ -9,6 +9,6 @@ namespace TranspotationAPI.Repositories
         Task<List<GetAllUserInformationResDto>> GetAllUserInformationAsync();
         Task<CreateUpdateUserResDto> CreateUpdateUserAsync(CreateUpdateUserResDto user, int accountId);
         Task DeleteAccountByIdAsync(int accountId);
-
+        Task<bool> ChangeStatusAccountByIdAsync(int accountId);
     }
 }

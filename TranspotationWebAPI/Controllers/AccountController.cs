@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.OleDb;
 using System.Security.Principal;
 using TranspotationAPI.DbContexts;
 using TranspotationAPI.Enum;
@@ -32,7 +33,7 @@ namespace TranspotationAPI.Controllers
         
         // Get user information by Id
         [HttpGet]
-        [Route("{accountId}")]
+        [Route("GetUserById/{accountId}")]
         public async Task<ActionResult<GetUserInformationResDto>> GetUserInformationByIdAsync(int accountId)
         {
             _logger.LogInformation($"Get User's Information By Id: {accountId} by API.");
@@ -88,7 +89,7 @@ namespace TranspotationAPI.Controllers
 
         //Update user
         [HttpPut]
-        [Route("id")]
+        [Route("UpdateUserById/{id}")]
         public async Task<ActionResult<CommonResDto>> UpdateUserByIdAsync(int id, [FromBody] CreateUpdateUserResDto createUpdateUserResDto)
         {
             _logger.LogInformation($"Update user API");
@@ -109,18 +110,42 @@ namespace TranspotationAPI.Controllers
 
         //Delete user
         [HttpDelete]
-        [Route("{id}")]
-        public async Task<ActionResult> DeleteAccountByIdAsync(int id)
+        [Route("DeleteUserById/{id}")]
+        public async Task<ActionResult<CommonResDto>> DeleteAccountByIdAsync(int id)
         {
+            _logger.LogInformation($"Delete Account By Id API");
             try
             {
-                await _accountRepository.DeleteAccountByIdAsync(id);                
+                await _accountRepository.DeleteAccountByIdAsync(id);
+                _resonse.DisplayMessage= "Delete user successfully";
             }
             catch (Exception ex)
             {
-
+                _resonse.IsSuccess = false;
+                _resonse.ErrorMessage
+                    = new List<string> { ex.ToString() };
             }
-            return Ok();
+            return Ok(_resonse);
+        }
+
+        //Change user status
+        [HttpPatch]
+        [Route("ChangeStatusUserById/{id}")]
+        public async Task<ActionResult<CommonResDto>> ChangeUserStatusById(int id)
+        {
+            _logger.LogInformation($"Change user status API");
+            try
+            {
+                bool result = await _accountRepository.ChangeStatusAccountByIdAsync(id);
+                _resonse.Result = result;
+                _resonse.DisplayMessage = "Change user status successfully";
+            } catch (Exception ex)
+            {                
+                _resonse.IsSuccess = false;
+                _resonse.ErrorMessage
+                    = new List<string> { ex.ToString() };            
+            }
+            return Ok(_resonse);
         }
     }
 }
