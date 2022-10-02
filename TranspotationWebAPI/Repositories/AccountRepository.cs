@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 using TranspotationAPI.DbContexts;
 using TranspotationAPI.Enum;
 using TranspotationWebAPI.Model;
@@ -20,12 +22,15 @@ namespace TranspotationAPI.Repositories
         // Add Logger to log every event to the console for tracking purpose
         private readonly ILogger _logger;
 
-        public AccountRepository(ApplicationDbContext db, IMapper mapper, ILogger<AccountRepository> logger)
+        private readonly IConfiguration _configuration;
+
+        public AccountRepository(ApplicationDbContext db, IMapper mapper, ILogger<AccountRepository> logger, IConfiguration configuration)
         {
             _db = db;
             _mapper = mapper;
             _logger = logger;
-        }   
+            _configuration = configuration;
+        }        
 
         // Find Account By Id
         public async Task<Account> FindAccountByIdAsync(int accountId)
@@ -50,14 +55,15 @@ namespace TranspotationAPI.Repositories
                          where pd2.Id == accountId
                          select new GetUserInformationResDto
                          {
-                             Id = pd.Id,
-                             password = pd.Password,
+                             Id = pd.Id,                             
                              phoneNumber = pd.Phone,
                              email = pd.Email,
                              name = pd.Name,
                              status = pd.Status,
                              roleName = pd2.Name,
-                             roleAuthority = pd2.Authority
+                             roleAuthority = pd2.Authority,
+                             passwordHash = pd.PasswordHash,
+                             passwordSalt = pd.PasswordSalt
                          }).FirstOrDefaultAsync();
             GetUserInformationResDto acc = await query;
             return _mapper.Map<GetUserInformationResDto>(acc);         
@@ -71,23 +77,24 @@ namespace TranspotationAPI.Repositories
                          join pd2 in _db.Role on pd.RoleId equals pd2.Id                         
                          select new GetAllUserInformationResDto
                          {
-                             Id = pd.Id,
-                             password = pd.Password,
+                             Id = pd.Id,                             
                              phoneNumber = pd.Phone,
                              email = pd.Email,
                              name = pd.Name,
                              status = pd.Status,
                              roleName = pd2.Name,
-                             roleAuthority = pd2.Authority                             
+                             roleAuthority = pd2.Authority,
+                             passwordHash = pd.PasswordHash,
+                             passwordSalt = pd.PasswordSalt
                          }).ToListAsync();
             List<GetAllUserInformationResDto> listAcc = await query;
             return _mapper.Map<List<GetAllUserInformationResDto>>(listAcc);
         }
 
         // Create and Update Account
-        public async Task<CreateUpdateUserResDto> CreateUpdateUserAsync(CreateUpdateUserResDto user, int accountId)
+        public async Task<CreateUpdateUserResDto> CreateUpdateUserAsync(CreateUpdateUserResDto user, int accountId, string Password)
         {
-            Account acc = new Account(user.Phone, user.Email, user.Name, user.Password, user.Status, user.CompanyId, user.roleId);
+            Account acc = new Account(user.Name, user.Phone, user.Email, user.Status, user.CompanyId, user.roleId, user.PasswordHash, user.PasswordSalt);
             acc.CompanyId = 0;
             acc.Status = true;
             acc.RoleId = 3;
@@ -95,7 +102,12 @@ namespace TranspotationAPI.Repositories
             if (accountId == 0)
             {
                 _logger.LogInformation($"Create new User.");
-                _db.Account.Add(acc);
+
+                CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
+                acc.PasswordHash = Convert.ToBase64String(passwordHash);
+                acc.PasswordSalt = Convert.ToBase64String(passwordSalt);
+                              
+                await _db.Account.AddAsync(acc);                
             }
             else
             {
@@ -103,14 +115,13 @@ namespace TranspotationAPI.Repositories
                 Account accUpdate = await this.FindAccountByIdAsync(accountId);
                 accUpdate.Name = user.Name;
                 accUpdate.Phone = user.Phone;
-                accUpdate.Email = user.Email;
-                accUpdate.Password = user.Password;                
+                accUpdate.Email = user.Email;                                
                 _db.Account.Update(accUpdate);
             }
             await _db.SaveChangesAsync();
             return _mapper.Map<CreateUpdateUserResDto>(acc);
         }
-
+        
         //Delete Account
         public async Task DeleteAccountByIdAsync(int accountId)
         {
@@ -151,6 +162,71 @@ namespace TranspotationAPI.Repositories
             }
             await _db.SaveChangesAsync();
             return true;
+        }
+
+        private void CreatePasswordHash(String password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+
+        private bool VerifyPasswordHash(String password, string passwordHash, string passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(Convert.FromBase64String(passwordSalt)))
+            {
+                var computedHash = Convert.ToBase64String(hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != passwordHash[i]) throw new UnauthorizedAccessException(ErrorCode.PASSWORD_INCORRECT);
+                }
+                return true;
+            }
+        }
+
+        public async Task<string> LoginAndReturnTokenAsync(string email, string passwordHash)
+        {
+            _logger.LogInformation($"Login with email: {email}");
+            Account acc = await _db.Account.FirstOrDefaultAsync(x => x.Email == email);            
+            if (acc == null)
+            {
+                _logger.LogError($"Account not found");
+                throw new KeyNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+            if (acc.Status == false)
+            {
+                _logger.LogError($"Account is blocked");
+                throw new KeyNotFoundException(ErrorCode.ACCOUNT_BLOCKED);
+            }
+            if (!VerifyPasswordHash(passwordHash, acc.PasswordHash, acc.PasswordSalt))
+            {
+                _logger.LogError($"Password incorrect");
+                throw new UnauthorizedAccessException(ErrorCode.PASSWORD_INCORRECT);
+            }
+            String token = GenerateToken(acc);
+            return token;
+        }
+
+        private string GenerateToken(Account acc)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, acc.Name),
+                new Claim(ClaimTypes.Email, acc.Email)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _configuration.GetSection("AppSettings:Token").Value));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds
+                );
+            var jwt = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
         }
     }
 }

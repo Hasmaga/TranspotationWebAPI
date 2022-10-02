@@ -20,10 +20,13 @@ namespace TranspotationWebAPI.Model
             ErrorMessage = "please enter correct url address"
             )
         ]
-        public string Email { get; set; }
+        public string Email { get; set; }        
+        
+        [Column("PasswordHash")]
+        public string? PasswordHash { get; set; }
 
-        [Column("Password")]
-        public string Password { get; set; }
+        [Column("PasswordSalt")]
+        public string? PasswordSalt { get; set; }
 
         [Column("Status")]
         public bool Status { get; set; } = true;
@@ -36,15 +39,16 @@ namespace TranspotationWebAPI.Model
         public int RoleId { get; set; }
         public Role Role { get; set; }
 
-        public Account(string name, string phone, string email, string password, bool status, int? companyId, int roleId)
+        public Account(string name, string phone, string email, bool status, int? companyId, int roleId, string? PasswordHash, string? PasswordSalt )
         {
             this.Name = name;
             this.Phone = phone;
-            this.Email = email;
-            this.Password = password;
+            this.Email = email;            
             this.Status = status;
             this.CompanyId = companyId;
             this.RoleId = roleId;
+            this.PasswordHash = PasswordHash;
+            this.PasswordSalt = PasswordSalt;
         }
     }
 }

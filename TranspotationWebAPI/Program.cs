@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using TranspotationAPI.Config;
 using TranspotationAPI.DbContexts;
 using TranspotationAPI.Repositories;
@@ -15,24 +14,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(typeof(MappingConfig).Assembly);
 // Add Services and Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-
-// Add Authorentication to the project
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters()
+// Add Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateActor = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-});
-
-
-
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,            
+            ValidateIssuerSigningKey = true,            
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value))
+        };
+    });
 
 // Add DbContext using SQL Server Provider
 var connectionString = $"Data Source=BPAKHANG;Initial Catalog=Transport;User ID=Hasmaga;Password=Ankhang28";
@@ -49,7 +42,20 @@ builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+
+
+});
 
 var app = builder.Build();
 
@@ -60,38 +66,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.MapPost("/login",
-//    (UserLoginResDto user, IAccountRepository service) => Login(user, service));
-
-//IResult Login(UserLoginResDto user, IAccountRepository service)
-//{
-//    if(!string.IsNullOrEmpty(user.userName) && !string.IsNullOrEmpty(user.password))
-//    {
-//        var loggedInUser = service.GetUserByEmailAndPassword(user);
-//        if (loggedInUser is null) return Results.NotFound("User Not Found!");
-
-//        var token = new JwtSecurityToken
-//        (
-//            issuer: builder.Configuration["Jwt:Issuer"],
-//            audience: builder.Configuration["Jwt:Audience"],
-//            //add claim here
-//            expires: DateTime.UtcNow.AddDays(60),
-//            notBefore: DateTime.UtcNow,
-//            signingCredentials: new SigningCredentials(
-//                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-//                SecurityAlgorithms.HmacSha256)
-//        );        
-//    }
-//}
-
-
-
 app.UseCors("corspolicy");
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 

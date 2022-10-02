@@ -1,4 +1,5 @@
-﻿using TranspotationWebAPI.Model.Dto;
+﻿using TranspotationWebAPI.Model;
+using TranspotationWebAPI.Model.Dto;
 
 namespace TranspotationAPI.Repositories
 {
@@ -7,8 +8,9 @@ namespace TranspotationAPI.Repositories
     {
         Task<GetUserInformationResDto> GetUserInformationByIdAsync(int accountId);        
         Task<List<GetAllUserInformationResDto>> GetAllUserInformationAsync();
-        Task<CreateUpdateUserResDto> CreateUpdateUserAsync(CreateUpdateUserResDto user, int accountId);
+        Task<CreateUpdateUserResDto> CreateUpdateUserAsync(CreateUpdateUserResDto user, int accountId, string password);
         Task DeleteAccountByIdAsync(int accountId);
         Task<bool> ChangeStatusAccountByIdAsync(int accountId);
+        Task<String> LoginAndReturnTokenAsync(string email, string passwordHash);
     }
 }

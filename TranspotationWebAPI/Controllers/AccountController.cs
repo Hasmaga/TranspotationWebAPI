@@ -66,26 +66,25 @@ namespace TranspotationAPI.Controllers
         }
 
         // Add new user
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         [Route("AddUser")]
-        public async Task<ActionResult<CommonResDto>> CreateNewUserAsync([FromBody] CreateUpdateUserResDto user)
+        public async Task<ActionResult<CommonResDto>> CreateNewUserAsync([FromBody] CreateUpdateUserResDto user, string password)
         {
             _logger.LogInformation($"Create New User API");
             try
             {
-                int id = 0;
-                CreateUpdateUserResDto acc = await _accountRepository.CreateUpdateUserAsync(user,id);
-                _resonse.Result = acc;
+                var accountId = 0;
+                await _accountRepository.CreateUpdateUserAsync(user,accountId, password);
                 _resonse.DisplayMessage = "Create new user successfully";
+                return Ok(_resonse);
             }
             catch (Exception ex)
             {
-                _resonse.IsSuccess = false;
-                _resonse.ErrorMessage
-                    = new List<string> { ex.ToString() };
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.ACCOUNT_NOT_FOUND);
             }
-            return Ok(_resonse);
         }
+        
 
         //Update user
         [HttpPut]
@@ -95,7 +94,8 @@ namespace TranspotationAPI.Controllers
             _logger.LogInformation($"Update user API");
             try
             {
-                CreateUpdateUserResDto acc = await _accountRepository.CreateUpdateUserAsync(createUpdateUserResDto, id);
+                
+                CreateUpdateUserResDto acc = await _accountRepository.CreateUpdateUserAsync(createUpdateUserResDto, id, null);
                 _resonse.Result = acc;
                 _resonse.DisplayMessage = "Update user successfully";
             }
@@ -144,6 +144,25 @@ namespace TranspotationAPI.Controllers
                 _resonse.IsSuccess = false;
                 _resonse.ErrorMessage
                     = new List<string> { ex.ToString() };            
+            }
+            return Ok(_resonse);
+        }
+
+        [HttpPost]
+        [Route("Login")]
+        public async Task<ActionResult<CommonResDto>> LoginAsync(string email, string password)
+        {
+            _logger.LogInformation($"Login API");
+            try
+            {
+                string token = await _accountRepository.LoginAndReturnTokenAsync(email, password);
+                _resonse.Result = token;
+                _resonse.DisplayMessage = "Login successfully";               
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.ACCOUNT_NOT_FOUND);
             }
             return Ok(_resonse);
         }

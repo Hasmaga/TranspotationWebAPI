@@ -4,6 +4,8 @@
     public class ErrorCode
     {
         // Error for not found Account in database or error with code
-        public const string ACCOUNT_NOT_FOUND = "THIS_ACCOUNT_NOT_FOUND";        
+        public const string ACCOUNT_NOT_FOUND = "THIS_ACCOUNT_NOT_FOUND";
+        public const string PASSWORD_INCORRECT = "PASSWORD_INCORRECT";
+        public const string ACCOUNT_BLOCKED = "ACCOUNT_BLOCKED";
     }
 }
