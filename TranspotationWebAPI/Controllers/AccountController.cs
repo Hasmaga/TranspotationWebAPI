@@ -49,7 +49,7 @@ namespace TranspotationAPI.Controllers
         }
 
         // Get all user information
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "1")]
         [Route("GetAllUser")]
         public async Task<ActionResult<List<GetAllUserInformationResDto>>> GetAllUserInformationAsync()
         {
@@ -147,6 +147,7 @@ namespace TranspotationAPI.Controllers
             }
             return Ok(_resonse);
         }
+
 
         [HttpPost]
         [Route("Login")]

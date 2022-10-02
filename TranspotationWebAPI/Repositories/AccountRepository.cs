@@ -214,7 +214,8 @@ namespace TranspotationAPI.Repositories
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, acc.Name),
-                new Claim(ClaimTypes.Email, acc.Email)
+                new Claim(ClaimTypes.Email, acc.Email),
+                new Claim(ClaimTypes.Role, acc.RoleId.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
