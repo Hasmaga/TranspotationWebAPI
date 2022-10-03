@@ -8,6 +8,7 @@ using TranspotationAPI.Enum;
 using TranspotationWebAPI.Model;
 using TranspotationWebAPI.Model.Dto;
 
+
 namespace TranspotationAPI.Repositories
 {
     //For controller to use
@@ -91,35 +92,14 @@ namespace TranspotationAPI.Repositories
             return _mapper.Map<List<GetAllUserInformationResDto>>(listAcc);
         }
 
-        // Create and Update Account
-        public async Task<CreateUpdateUserResDto> CreateUpdateUserAsync(CreateUpdateUserResDto user, int accountId, string Password)
+        public async Task<CreateAccountResDto> CreateAccountAsync(CreateAccountResDto acc)
         {
-            Account acc = new Account(user.Name, user.Phone, user.Email, user.Status, user.CompanyId, user.roleId, user.PasswordHash, user.PasswordSalt);
-            acc.CompanyId = 0;
-            acc.Status = true;
-            acc.RoleId = 3;
-            
-            if (accountId == 0)
-            {
-                _logger.LogInformation($"Create new User.");
-
-                CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
-                acc.PasswordHash = Convert.ToBase64String(passwordHash);
-                acc.PasswordSalt = Convert.ToBase64String(passwordSalt);
-                              
-                await _db.Account.AddAsync(acc);                
-            }
-            else
-            {
-                _logger.LogInformation($"Update User with id: {accountId}");
-                Account accUpdate = await this.FindAccountByIdAsync(accountId);
-                accUpdate.Name = user.Name;
-                accUpdate.Phone = user.Phone;
-                accUpdate.Email = user.Email;                                
-                _db.Account.Update(accUpdate);
-            }
+            _logger.LogInformation($"Create new Account");
+            CreatePasswordHash(acc.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            Account newAcc = new Account(acc.Name, acc.Phone, acc.Email, true, acc.CompanyId, acc.RoleId, Convert.ToBase64String(passwordHash), Convert.ToBase64String(passwordSalt));
+            await _db.Account.AddAsync(newAcc);
             await _db.SaveChangesAsync();
-            return _mapper.Map<CreateUpdateUserResDto>(acc);
+            return _mapper.Map<CreateAccountResDto>(newAcc);
         }
         
         //Delete Account
@@ -213,9 +193,7 @@ namespace TranspotationAPI.Repositories
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, acc.Name),
-                new Claim(ClaimTypes.Email, acc.Email),
-                new Claim(ClaimTypes.Role, acc.RoleId.ToString())
+                new Claim(ClaimTypes.Sid, acc.Id.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
@@ -228,6 +206,54 @@ namespace TranspotationAPI.Repositories
                 );
             var jwt = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
+        }
+
+        public async Task<RegistrationUserResDto> RegistrationUserAsync(RegistrationUserResDto user)
+        {
+            _logger.LogInformation($"Registration new user");
+            bool Status = true;
+            int CompanyId = 0;
+            int RoleId = 3;
+            await CheckEmailExistAsync(user.Email);            
+            CreatePasswordHash(user.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            Account acc = new Account(user.Name, user.Phone, user.Email, Status, CompanyId, RoleId, Convert.ToBase64String(passwordHash), Convert.ToBase64String(passwordSalt));
+            await _db.Account.AddAsync(acc);
+            await _db.SaveChangesAsync();
+            return _mapper.Map<RegistrationUserResDto>(acc);
+        }       
+
+        public async Task CheckEmailExistAsync(string email)
+        {
+            _logger.LogInformation($"Check email exist");
+            var check_Email = await _db.Account.AnyAsync(x => x.Email == email);
+            if (check_Email == true)
+            {
+                _logger.LogError($"Email exist");
+                throw new KeyNotFoundException(ErrorCode.EMAIL_EXIST);
+            }
+        }
+
+        public async Task<UpdateInfoUserResDto> UpdateUserInfoAsync(UpdateInfoUserResDto user, int Id)
+        {
+            _logger.LogInformation($"Update Info user with Id: {Id}.");
+            Account accUpdate = await FindAccountByIdAsync(Id);
+            if (user.Name != null)
+            {
+                accUpdate.Name = user.Name;
+            }
+            if (user.Email!=null)
+            {
+                accUpdate.Email = user.Email;
+            }
+            if (user.Password != null)
+            {
+                CreatePasswordHash(user.Password, out byte[] passwordHash, out byte[] passwordSalt);
+                accUpdate.PasswordHash = Convert.ToBase64String(passwordHash);
+                accUpdate.PasswordSalt = Convert.ToBase64String(passwordSalt);
+            }
+            _db.Account.Update(accUpdate);
+            await _db.SaveChangesAsync();
+            return _mapper.Map<UpdateInfoUserResDto>(accUpdate);
         }
     }
 }

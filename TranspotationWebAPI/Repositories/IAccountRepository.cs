@@ -8,9 +8,12 @@ namespace TranspotationAPI.Repositories
     {
         Task<GetUserInformationResDto> GetUserInformationByIdAsync(int accountId);        
         Task<List<GetAllUserInformationResDto>> GetAllUserInformationAsync();
-        Task<CreateUpdateUserResDto> CreateUpdateUserAsync(CreateUpdateUserResDto user, int accountId, string password);
+        Task<CreateAccountResDto> CreateAccountAsync(CreateAccountResDto acc);
         Task DeleteAccountByIdAsync(int accountId);
         Task<bool> ChangeStatusAccountByIdAsync(int accountId);
         Task<String> LoginAndReturnTokenAsync(string email, string passwordHash);
+        Task<RegistrationUserResDto> RegistrationUserAsync(RegistrationUserResDto user);
+        Task CheckEmailExistAsync(string email);
+        Task<UpdateInfoUserResDto> UpdateUserInfoAsync(UpdateInfoUserResDto user, int id);
     }
 }

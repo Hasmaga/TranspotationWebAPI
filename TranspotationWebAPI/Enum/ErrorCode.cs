@@ -7,5 +7,7 @@
         public const string ACCOUNT_NOT_FOUND = "THIS_ACCOUNT_NOT_FOUND";
         public const string PASSWORD_INCORRECT = "PASSWORD_INCORRECT";
         public const string ACCOUNT_BLOCKED = "ACCOUNT_BLOCKED";
+        public const string EMAIL_EXIST = "THIS_EMAIL_HAS_BEEN_REGISTERED";
+        public const string REGISTRATION_FAILED = "REGISTRATION_FAILED";
     }
 }

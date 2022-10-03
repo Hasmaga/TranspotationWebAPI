@@ -67,15 +67,16 @@ namespace TranspotationAPI.Controllers
 
         // Add new user
         [HttpPost, AllowAnonymous]
-        [Route("AddUser")]
-        public async Task<ActionResult<CommonResDto>> CreateNewUserAsync([FromBody] CreateUpdateUserResDto user, string password)
+        [Route("AddAccount")]
+        public async Task<ActionResult<CommonResDto>> CreateNewAccountAsync([FromBody] CreateAccountResDto newAcc)
         {
-            _logger.LogInformation($"Create New User API");
+            _logger.LogInformation($"Create New Account API");
             try
             {
-                var accountId = 0;
-                await _accountRepository.CreateUpdateUserAsync(user,accountId, password);
+                await _accountRepository.CreateAccountAsync(newAcc);
+                _resonse.Result = newAcc;
                 _resonse.DisplayMessage = "Create new user successfully";
+                _resonse.IsSuccess = true;
                 return Ok(_resonse);
             }
             catch (Exception ex)
@@ -85,28 +86,7 @@ namespace TranspotationAPI.Controllers
             }
         }
         
-
-        //Update user
-        [HttpPut]
-        [Route("UpdateUserById/{id}")]
-        public async Task<ActionResult<CommonResDto>> UpdateUserByIdAsync(int id, [FromBody] CreateUpdateUserResDto createUpdateUserResDto)
-        {
-            _logger.LogInformation($"Update user API");
-            try
-            {
-                
-                CreateUpdateUserResDto acc = await _accountRepository.CreateUpdateUserAsync(createUpdateUserResDto, id, null);
-                _resonse.Result = acc;
-                _resonse.DisplayMessage = "Update user successfully";
-            }
-            catch (Exception ex)
-            {
-                _resonse.IsSuccess = false;
-                _resonse.ErrorMessage
-                    = new List<string> { ex.ToString() };
-            }
-            return Ok(_resonse);
-        }
+               
 
         //Delete user
         [HttpDelete]
@@ -164,6 +144,49 @@ namespace TranspotationAPI.Controllers
             {
                 _logger.LogError(ex.ToString());
                 return NotFound(ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+            return Ok(_resonse);
+        }
+
+        // Registation User
+        [HttpPost]
+        [Route("Register")]
+        public async Task<ActionResult<CommonResDto>> RegisterAsync([FromBody] RegistrationUserResDto user)
+        {
+            _logger.LogInformation($"Register API");
+            try
+            {
+                await _accountRepository.RegistrationUserAsync(user);
+                _resonse.Result = user;
+                _resonse.DisplayMessage = "Register successfully";
+                _resonse.IsSuccess = true;                
+                return Ok(_resonse);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.REGISTRATION_FAILED);
+            }
+        }
+
+        //Update user
+        [HttpPut]
+        [Route("UpdateUser")]
+        public async Task<ActionResult<CommonResDto>> UpdateUserAsync([FromBody] UpdateInfoUserResDto accUpdate, int id)
+        {
+            _logger.LogInformation($"Update user API");
+            try
+            {
+                UpdateInfoUserResDto acc = await _accountRepository.UpdateUserInfoAsync(accUpdate, id);
+                _resonse.Result = acc;
+                _resonse.IsSuccess = true;
+                _resonse.DisplayMessage = "Update user successfully";
+            }
+            catch (Exception ex)
+            {
+                _resonse.IsSuccess = false;
+                _resonse.ErrorMessage
+                    = new List<string> { ex.ToString() };
             }
             return Ok(_resonse);
         }
