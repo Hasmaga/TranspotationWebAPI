@@ -53,7 +53,7 @@ namespace TranspotationAPI.Repositories
             _logger.LogInformation($"Get User Information By Id: {accountId}");
             var query = (from pd in _db.Account
                          join pd2 in _db.Role on pd.RoleId equals pd2.Id
-                         where pd2.Id == accountId
+                         where pd.Id == accountId
                          select new GetUserInformationResDto
                          {
                              Id = pd.Id,                             
@@ -193,7 +193,10 @@ namespace TranspotationAPI.Repositories
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Sid, acc.Id.ToString())
+                new Claim(ClaimTypes.Sid, acc.Id.ToString()),
+                new Claim(ClaimTypes.Name, acc.Name),
+                new Claim(ClaimTypes.Email, acc.Email),
+                new Claim(ClaimTypes.Role, acc.RoleId.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
@@ -252,8 +255,20 @@ namespace TranspotationAPI.Repositories
                 accUpdate.PasswordSalt = Convert.ToBase64String(passwordSalt);
             }
             _db.Account.Update(accUpdate);
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();            
             return _mapper.Map<UpdateInfoUserResDto>(accUpdate);
+        }
+
+        public async Task<GetUserInfoByIdResDto> GetUserInfoByIdAsync(int id)
+        {
+            _logger.LogInformation($"Get user info by id: {id}");
+            Account accGet = await FindAccountByIdAsync(id);
+            if (accGet == null)
+            {
+                _logger.LogInformation($"User Id: {id} not found at {DateTime.UtcNow.ToLongTimeString()}");
+                throw new KeyNotFoundException(ErrorCode.USER_NOT_FOUND);
+            }
+            return _mapper.Map<GetUserInfoByIdResDto>(accGet);
         }
     }
 }

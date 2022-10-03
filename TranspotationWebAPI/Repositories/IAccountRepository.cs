@@ -15,5 +15,6 @@ namespace TranspotationAPI.Repositories
         Task<RegistrationUserResDto> RegistrationUserAsync(RegistrationUserResDto user);
         Task CheckEmailExistAsync(string email);
         Task<UpdateInfoUserResDto> UpdateUserInfoAsync(UpdateInfoUserResDto user, int id);
+        Task<GetUserInfoByIdResDto> GetUserInfoByIdAsync(int id);
     }
 }

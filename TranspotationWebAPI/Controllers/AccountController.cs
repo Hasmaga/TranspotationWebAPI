@@ -1,10 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.OleDb;
-using System.Security.Principal;
-using TranspotationAPI.DbContexts;
 using TranspotationAPI.Enum;
 using TranspotationAPI.Repositories;
 using TranspotationWebAPI.Model.Dto;
@@ -22,6 +17,8 @@ namespace TranspotationAPI.Controllers
         private IAccountRepository _accountRepository;
 
         private readonly ILogger _logger;       
+        
+        
 
         public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger)
         {
@@ -32,19 +29,23 @@ namespace TranspotationAPI.Controllers
         
         
         // Get user information by Id
-        [HttpGet]
-        [Route("GetUserById/{accountId}")]
-        public async Task<ActionResult<GetUserInformationResDto>> GetUserInformationByIdAsync(int accountId)
+        [HttpGet, Authorize(Roles = "1")]
+        [Route("GetAccountById/{accountId}")]
+        public async Task<ActionResult<GetUserInformationResDto>> GetAccountInformationByIdAsync(int accountId)
         {
             _logger.LogInformation($"Get User's Information By Id: {accountId} by API.");
             try
             {
                 GetUserInformationResDto account = await _accountRepository.GetUserInformationByIdAsync(accountId);
+                if (account == null)
+                {
+                    return NotFound(ErrorCode.ACCOUNT_NOT_FOUND);
+                }
                 return Ok(account);
             } catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
-                return NotFound(ErrorCode.ACCOUNT_NOT_FOUND);
+                return NotFound(ErrorCode.GET_ACCOUNT_INFO_FAIL);
             }
         }
 
@@ -89,7 +90,7 @@ namespace TranspotationAPI.Controllers
                
 
         //Delete user
-        [HttpDelete]
+        [HttpDelete, Authorize(Roles = "1")]
         [Route("DeleteUserById/{id}")]
         public async Task<ActionResult<CommonResDto>> DeleteAccountByIdAsync(int id)
         {
@@ -97,7 +98,9 @@ namespace TranspotationAPI.Controllers
             try
             {
                 await _accountRepository.DeleteAccountByIdAsync(id);
-                _resonse.DisplayMessage= "Delete user successfully";
+                _resonse.Result = id;
+                _resonse.IsSuccess = true;
+                _resonse.DisplayMessage= "Delete user successfully";                
             }
             catch (Exception ex)
             {
@@ -109,7 +112,7 @@ namespace TranspotationAPI.Controllers
         }
 
         //Change user status
-        [HttpPatch]
+        [HttpPatch, Authorize(Roles = "1")]
         [Route("ChangeStatusUserById/{id}")]
         public async Task<ActionResult<CommonResDto>> ChangeUserStatusById(int id)
         {
@@ -119,7 +122,8 @@ namespace TranspotationAPI.Controllers
                 bool result = await _accountRepository.ChangeStatusAccountByIdAsync(id);
                 _resonse.Result = result;
                 _resonse.DisplayMessage = "Change user status successfully";
-            } catch (Exception ex)
+            } 
+            catch (Exception ex)
             {                
                 _resonse.IsSuccess = false;
                 _resonse.ErrorMessage
@@ -129,7 +133,7 @@ namespace TranspotationAPI.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         [Route("Login")]
         public async Task<ActionResult<CommonResDto>> LoginAsync(string email, string password)
         {
@@ -149,7 +153,7 @@ namespace TranspotationAPI.Controllers
         }
 
         // Registation User
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         [Route("Register")]
         public async Task<ActionResult<CommonResDto>> RegisterAsync([FromBody] RegistrationUserResDto user)
         {
@@ -159,18 +163,18 @@ namespace TranspotationAPI.Controllers
                 await _accountRepository.RegistrationUserAsync(user);
                 _resonse.Result = user;
                 _resonse.DisplayMessage = "Register successfully";
-                _resonse.IsSuccess = true;                
-                return Ok(_resonse);
+                _resonse.IsSuccess = true;               
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
                 return NotFound(ErrorCode.REGISTRATION_FAILED);
             }
+            return Ok(_resonse);
         }
 
         //Update user
-        [HttpPut]
+        [HttpPut, AllowAnonymous]
         [Route("UpdateUser")]
         public async Task<ActionResult<CommonResDto>> UpdateUserAsync([FromBody] UpdateInfoUserResDto accUpdate, int id)
         {
@@ -189,6 +193,24 @@ namespace TranspotationAPI.Controllers
                     = new List<string> { ex.ToString() };
             }
             return Ok(_resonse);
+        }
+
+        //Get User Info 
+        [HttpGet, AllowAnonymous]
+        [Route("GetUserInfo")]
+        public async Task<ActionResult<GetUserInfoByIdResDto>> GetUserInfoByIdAsync(int id)
+        {
+            _logger.LogInformation($"Get user by id API");
+            try
+            {
+                GetUserInfoByIdResDto acc = await _accountRepository.GetUserInfoByIdAsync(id);
+                return Ok(acc);
+            } 
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.ACCOUNT_NOT_FOUND);
+            }
         }
     }
 }
