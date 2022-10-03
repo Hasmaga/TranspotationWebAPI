@@ -11,5 +11,9 @@
         public const string EMAIL_EXIST = "THIS_EMAIL_HAS_BEEN_REGISTERED";
         public const string REGISTRATION_FAILED = "REGISTRATION_FAILED";
         public const string GET_ACCOUNT_INFO_FAIL = "GET_ACCOUNT_INFO_FAIL";
+        public const string GET_ROLE_ACCOUNT_FAIL = "GET_ROLE_ACCOUNT_FAIL";
+        public const string THIS_ACCOUNT_IS_NOT_AUTH = "THIS_ACCOUNT_IS_NOT_AUTH";
+        public const string REPOSITORY_ERROR = "REPOSITORY_ERROR";
+        public const string CREATE_COMPANY_TRIP_FAIL = "CREATE_COMPANY_TRIP_FAIL";
     }
 }

@@ -196,7 +196,8 @@ namespace TranspotationAPI.Repositories
                 new Claim(ClaimTypes.Sid, acc.Id.ToString()),
                 new Claim(ClaimTypes.Name, acc.Name),
                 new Claim(ClaimTypes.Email, acc.Email),
-                new Claim(ClaimTypes.Role, acc.RoleId.ToString())
+                new Claim(ClaimTypes.Role, acc.RoleId.ToString()),
+                new Claim(ClaimTypes.GroupSid, acc.CompanyId.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
