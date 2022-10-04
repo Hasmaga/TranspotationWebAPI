@@ -48,12 +48,12 @@ namespace TranspotationWebAPI.Controllers
         //Create Company Trip
         [HttpPost, Authorize]
         [Route("CreateCompanyTrip")]
-        public async Task<ActionResult<CommonResDto>> CreateCompanyTripAsync([FromBody] CreateCompanyTripResDto trip)
+        public async Task<ActionResult<CommonResDto>> CreateCompanyTripAsync([FromBody] CreateUpdateCompanyTripResDto trip)
         {
             _logger.LogInformation("Create Company Trip");
             try
             {
-                CreateCompanyTripResDto newTrip = await _companyTripRepository.CreateCompanyTripByCompnayIdAsync(trip);
+                CreateUpdateCompanyTripResDto newTrip = await _companyTripRepository.CreateCompanyTripByCompnayIdAsync(trip);
                 _response.Result = newTrip;
                 _response.IsSuccess = true;
                 _response.DisplayMessage = "Create Company Trip Success";
@@ -67,5 +67,45 @@ namespace TranspotationWebAPI.Controllers
             }
             return Ok(_response);
         }
+
+        //Update Company Trip
+        [HttpPut, Authorize]
+        [Route("UpdateCompanyTrip")]
+        public async Task<ActionResult<CommonResDto>> UpdateCompanyTripAsync([FromBody] CreateUpdateCompanyTripResDto trip, int id)
+        {
+            _logger.LogInformation("Update Company Trip");
+            try
+            {
+                CreateUpdateCompanyTripResDto newTrip = await _companyTripRepository.UpdateCompanyTripByCompnayIdAsync(trip, id);
+                _response.Result = newTrip;
+                _response.IsSuccess = true;
+                _response.DisplayMessage = "Update Company Trip Success";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                _response.IsSuccess = false;
+                _response.DisplayMessage = "Update Company Trip Fail";
+            }
+            return Ok(_response);
+        }
+
+        //Get All CompanyTrip By CompanyId
+        [HttpGet, Authorize]
+        [Route("GetCompanyTrip")]
+        public async Task<ActionResult<List<ReadCompanyTripResDto>>> GetAllCompanyTripByCompanyIdAsync()
+        {
+            _logger.LogInformation("Get All Company Trip By CompanyId");
+            try
+            {
+                List<ReadCompanyTripResDto> companyTrip = await _companyTripRepository.GetAllCompanyTripByCompanyIdAsync();
+                return Ok(companyTrip);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.GET_COMPANY_TRIP_FAIL);
+            }            
+        }       
     }
 }

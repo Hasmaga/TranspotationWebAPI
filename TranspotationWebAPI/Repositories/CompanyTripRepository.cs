@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TranspotationAPI.DbContexts;
 using TranspotationAPI.Enum;
@@ -21,13 +22,6 @@ namespace TranspotationWebAPI.Repositories
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
         }
-              
-
-
-        //public async Task<CreateCompanyTrip> CreateCompanyTripAsync(CreateCompanyTrip createCompanyTrip)
-        //{
-        //    _logger.LogInformation("Create Company Trip");
-        //}       
 
         public Task<string> GetCompanyByAccount()
         {
@@ -39,7 +33,7 @@ namespace TranspotationWebAPI.Repositories
             return Task.FromResult(result);
         }
 
-        public async Task<CreateCompanyTripResDto> CreateCompanyTripByCompnayIdAsync(CreateCompanyTripResDto trip)
+        public async Task<CreateUpdateCompanyTripResDto> CreateCompanyTripByCompnayIdAsync(CreateUpdateCompanyTripResDto trip)
         {
             int companyId = int.Parse(await GetCompanyByAccount());
             if (companyId == 0)
@@ -54,7 +48,50 @@ namespace TranspotationWebAPI.Repositories
             }
             await _db.CompanyTrip.AddAsync(newTrip);
             await _db.SaveChangesAsync();
-            return _mapper.Map<CreateCompanyTripResDto>(newTrip);
+            return _mapper.Map<CreateUpdateCompanyTripResDto>(newTrip);
+        }
+
+        public async Task<CreateUpdateCompanyTripResDto> UpdateCompanyTripByCompnayIdAsync(CreateUpdateCompanyTripResDto trip, int companyTripId)
+        {
+            int companyId = int.Parse(await GetCompanyByAccount());
+            if (companyId == 0)
+            {
+                throw new UnauthorizedAccessException(ErrorCode.THIS_ACCOUNT_IS_NOT_AUTH);
+            }
+            _logger.LogInformation($"Update CompanyTrip with CompanyId: {companyId}");
+            CompanyTrip updateTrip = await _db.CompanyTrip.FirstOrDefaultAsync(x => x.CompanyId == companyId && x.Id == companyTripId);
+            if (companyId != updateTrip.CompanyId)
+            {
+                throw new UnauthorizedAccessException(ErrorCode.THIS_ACCOUNT_IS_NOT_AUTH);            
+            }
+            if (updateTrip == null)
+            {
+                throw new Exception(ErrorCode.COMPANY_TRIP_NOT_FOUND);
+            }
+            updateTrip.TripId = trip.TripId;
+            updateTrip.CarId = trip.CarId;
+            updateTrip.StartTime = trip.StartTime;
+            updateTrip.Price = trip.Price;
+            updateTrip.CarTypeId = trip.CarTypeId;
+            updateTrip.StationId = trip.StationId;
+            await _db.SaveChangesAsync();
+            return _mapper.Map<CreateUpdateCompanyTripResDto>(updateTrip);
+        }
+
+        public async Task<List<ReadCompanyTripResDto>> GetAllCompanyTripByCompanyIdAsync()
+        {
+            int CompanyId = int.Parse(await GetCompanyByAccount());
+            if (CompanyId == 0)
+            {
+                throw new UnauthorizedAccessException(ErrorCode.THIS_ACCOUNT_IS_NOT_AUTH);
+            }
+            _logger.LogInformation($"Get All CompanyTrip with CompanyId: {CompanyId}");
+            List<CompanyTrip> companyTrips = await _db.CompanyTrip.Where(x => x.CompanyId == CompanyId).ToListAsync();
+            if (companyTrips == null)
+            {
+                throw new Exception(ErrorCode.REPOSITORY_ERROR);
+            }
+            return _mapper.Map<List<ReadCompanyTripResDto>>(companyTrips);
         }
     }
 }

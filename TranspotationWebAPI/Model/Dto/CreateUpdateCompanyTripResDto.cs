@@ -1,6 +1,6 @@
 ﻿namespace TranspotationWebAPI.Model.Dto
 {
-    public class CreateCompanyTripResDto
+    public class CreateUpdateCompanyTripResDto
     {
         public int TripId { get; set; }
         public int CarId { get; set; }        

@@ -5,7 +5,8 @@ namespace TranspotationWebAPI.Repositories
     public interface ICompanyTripRepository
     {
         Task<string> GetCompanyByAccount();
-
-        Task<CreateCompanyTripResDto> CreateCompanyTripByCompnayIdAsync(CreateCompanyTripResDto createCompanyTrip);
+        Task<CreateUpdateCompanyTripResDto> CreateCompanyTripByCompnayIdAsync(CreateUpdateCompanyTripResDto createCompanyTrip);
+        Task<CreateUpdateCompanyTripResDto> UpdateCompanyTripByCompnayIdAsync(CreateUpdateCompanyTripResDto updateCompanyTrip,int id);
+        Task<List<ReadCompanyTripResDto>> GetAllCompanyTripByCompanyIdAsync();
     }
 }
