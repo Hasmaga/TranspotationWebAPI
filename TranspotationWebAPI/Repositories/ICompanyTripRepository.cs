@@ -8,5 +8,7 @@ namespace TranspotationWebAPI.Repositories
         Task<CreateUpdateCompanyTripResDto> CreateCompanyTripByCompnayIdAsync(CreateUpdateCompanyTripResDto createCompanyTrip);
         Task<CreateUpdateCompanyTripResDto> UpdateCompanyTripByCompnayIdAsync(CreateUpdateCompanyTripResDto updateCompanyTrip,int id);
         Task<List<ReadCompanyTripResDto>> GetAllCompanyTripByCompanyIdAsync();
+        Task<bool> ChangeStatusCompanyTripByCompanyIdAsync(int id);
+        Task<bool> DeleteCompanyTripByCompanyIdAsync(int id);
     }
 }

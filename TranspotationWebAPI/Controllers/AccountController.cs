@@ -16,17 +16,14 @@ namespace TranspotationAPI.Controllers
         
         private IAccountRepository _accountRepository;
 
-        private readonly ILogger _logger;       
-        
-        
+        private readonly ILogger _logger;              
 
         public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger)
         {
             _accountRepository = accountRepository;
             this._resonse = new CommonResDto();
             _logger = logger;            
-        }
-        
+        }        
         
         // Get user information by Id
         [HttpGet, Authorize(Roles = "1")]

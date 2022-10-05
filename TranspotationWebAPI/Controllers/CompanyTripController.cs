@@ -106,6 +106,48 @@ namespace TranspotationWebAPI.Controllers
                 _logger.LogError(ex.ToString());
                 return NotFound(ErrorCode.GET_COMPANY_TRIP_FAIL);
             }            
-        }       
+        }
+
+        //Change status Company Trip 
+        [HttpPut, Authorize]
+        [Route("ChangeStatusCompanyTrip")]
+        public async Task<ActionResult<CommonResDto>> ChangeStatusCompanyTripByCompanyIdAsync(int id)
+        {
+            _logger.LogInformation("Change Status Company Trip");
+            try
+            {
+                bool status = await _companyTripRepository.ChangeStatusCompanyTripByCompanyIdAsync(id);
+                _response.IsSuccess = status;
+                _response.DisplayMessage = "Change Status Company Trip Success";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                _response.IsSuccess = false;
+                _response.DisplayMessage = "Change Status Company Trip Fail";
+            }
+            return Ok(_response);
+        }
+
+        //Delete Company Trip
+        [HttpDelete, Authorize]
+        [Route("DeleteCompanyTrip")]
+        public async Task<ActionResult<CommonResDto>> DeleteCompanyTripByCompanyIdAsync(int id)
+        {
+            _logger.LogInformation("Delete Company Trip");
+            try
+            {
+                bool status = await _companyTripRepository.DeleteCompanyTripByCompanyIdAsync(id);
+                _response.IsSuccess = status;
+                _response.DisplayMessage = "Delete Company Trip Success";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                _response.IsSuccess = false;
+                _response.DisplayMessage = "Delete Company Trip Fail";
+            }
+            return Ok(_response);
+        }
     }
 }

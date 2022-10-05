@@ -62,7 +62,7 @@ namespace TranspotationWebAPI.Repositories
             CompanyTrip updateTrip = await _db.CompanyTrip.FirstOrDefaultAsync(x => x.CompanyId == companyId && x.Id == companyTripId);
             if (companyId != updateTrip.CompanyId)
             {
-                throw new UnauthorizedAccessException(ErrorCode.THIS_ACCOUNT_IS_NOT_AUTH);            
+                throw new UnauthorizedAccessException(ErrorCode.THIS_ACCOUNT_IS_NOT_AUTH);
             }
             if (updateTrip == null)
             {
@@ -92,6 +92,50 @@ namespace TranspotationWebAPI.Repositories
                 throw new Exception(ErrorCode.REPOSITORY_ERROR);
             }
             return _mapper.Map<List<ReadCompanyTripResDto>>(companyTrips);
+        }
+
+        public async Task<bool> ChangeStatusCompanyTripByCompanyIdAsync(int id)
+        {
+            int CompanyId = int.Parse(await GetCompanyByAccount());
+            if (CompanyId == 0)
+            {
+                throw new UnauthorizedAccessException(ErrorCode.THIS_ACCOUNT_IS_NOT_AUTH);
+            }
+            _logger.LogInformation($"Change Status CompanyTrip with CompanyId: {CompanyId}");
+            CompanyTrip companyTrip = await _db.CompanyTrip.Where(x => x.CompanyId == CompanyId && x.Id == id).FirstOrDefaultAsync();
+            if (companyTrip == null)
+            {
+                throw new Exception(ErrorCode.REPOSITORY_ERROR);
+            }
+            if (companyTrip.Status == true)
+            {
+                companyTrip.Status = false;
+            }
+            else
+            {
+                companyTrip.Status = true;
+            }
+            _db.CompanyTrip.Update(companyTrip);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteCompanyTripByCompanyIdAsync(int id)
+        {
+            int CompanyId = int.Parse(await GetCompanyByAccount());
+            if (CompanyId == 0)
+            {
+                throw new UnauthorizedAccessException(ErrorCode.THIS_ACCOUNT_IS_NOT_AUTH);
+            }
+            _logger.LogInformation($"Delete CompanyTrip with CompanyId: {CompanyId}");
+            CompanyTrip companyTrip = await _db.CompanyTrip.Where(x => x.CompanyId == CompanyId && x.Id == id).FirstOrDefaultAsync();
+            if (companyTrip == null)
+            {
+                throw new Exception(ErrorCode.REPOSITORY_ERROR);
+            }
+            _db.CompanyTrip.Remove(companyTrip);
+            await _db.SaveChangesAsync();
+            return true;
         }
     }
 }
