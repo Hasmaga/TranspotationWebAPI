@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(typeof(MappingConfig).Assembly);
 // Add Services and Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ICompanyTripRepository, CompanyTripRepository>();
 // Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
