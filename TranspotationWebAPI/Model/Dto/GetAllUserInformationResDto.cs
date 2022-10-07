@@ -1,8 +1,8 @@
 ﻿namespace TranspotationWebAPI.Model.Dto
 {
-    public class GetUserInformationResDto
+    public class GetAllUserInformationResDto
     {
-        public int Id { get; set; }        
+        public int Id { get; set; }               
         public String phoneNumber { get; set; }
         public String email { get; set; }
         public String name { get; set; }
