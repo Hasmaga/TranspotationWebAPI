@@ -28,6 +28,8 @@ namespace TranspotationAPI.Config
 
             CreateMap<CompanyTrip, GetAllCompanyTripResDto>().ReverseMap();
 
+            CreateMap<CompanyTrip, GetCompanyTripByTripIdResDto>().ReverseMap();
+
             CreateMap<Ticket, GetTicketByAccountResDto>().ReverseMap();
         }
     }   
