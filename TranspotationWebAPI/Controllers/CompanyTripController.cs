@@ -149,5 +149,41 @@ namespace TranspotationWebAPI.Controllers
             }
             return Ok(_response);
         }
+
+        //Get Company Trip 
+        [HttpGet]
+        [Route("GetAllCompanyTrip")]
+        public async Task<ActionResult<List<GetAllCompanyTripResDto>>> GetAllCompanyTripAsync()
+        {
+            _logger.LogInformation("Get All Company Trip");
+            try
+            {
+                List<GetAllCompanyTripResDto> companyTrip = await _companyTripRepository.GetAllCompanyTripAsync();
+                return Ok(companyTrip);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.GET_COMPANY_TRIP_FAIL);
+            }
+        }
+
+        //Get Company Trip By Trip Id
+        [HttpGet]
+        [Route("GetCompanyTripByTripId")]
+        public async Task<ActionResult<GetCompanyTripByTripIdResDto>> GetCompanyTripByTripIdAsync(int id)
+        {
+            _logger.LogInformation("Get Company Trip By Trip Id");
+            try
+            {
+                List<GetCompanyTripByTripIdResDto> companyTrip = await _companyTripRepository.GetCompanyTripByTripIdAsync(id);
+                return Ok(companyTrip);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.GET_COMPANY_TRIP_FAIL);
+            }
+        }
     }
 }

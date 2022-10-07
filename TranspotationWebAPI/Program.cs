@@ -38,10 +38,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 //Add Cors
-builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
+
+builder.Services.AddCors(options =>
 {
-    build.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
-}));
+    options.AddPolicy(name: "CorsPolicy",
+        policy =>
+        {
+            policy.AllowAnyOrigin();
+            policy.AllowAnyMethod();
+            policy.AllowAnyHeader();
+        });
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -71,7 +78,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("corspolicy");
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 

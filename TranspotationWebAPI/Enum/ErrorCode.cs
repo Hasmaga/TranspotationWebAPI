@@ -17,5 +17,6 @@
         public const string CREATE_COMPANY_TRIP_FAIL = "CREATE_COMPANY_TRIP_FAIL";
         public const string COMPANY_TRIP_NOT_FOUND = "COMPANY_TRIP_NOT_FOUND";
         public const string GET_COMPANY_TRIP_FAIL = "GET_COMPANY_TRIP_FAIL";
+        public const string NOT_FOUND = "NOT_FOUND";
     }
 }

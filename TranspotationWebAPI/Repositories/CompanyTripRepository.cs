@@ -137,5 +137,59 @@ namespace TranspotationWebAPI.Repositories
             await _db.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<GetAllCompanyTripResDto>> GetAllCompanyTripAsync()
+        {
+            _logger.LogInformation($"Get All CompanyTrip");
+            var query = (from companyTrip in _db.CompanyTrip
+                        join trip in _db.Trip on companyTrip.TripId equals trip.Id
+                        join car in _db.Car on companyTrip.CarId equals car.Id
+                        join carType in _db.CarType on companyTrip.CarTypeId equals carType.Id
+                        join station in _db.Station on companyTrip.StationId equals station.Id
+                        join company in _db.Company on companyTrip.CompanyId equals company.Id
+                        select new GetAllCompanyTripResDto
+                        {
+                            LocationFrom = trip.From.Name,
+                            LoactionTo = trip.To.Name,
+                            CarName = car.Name,
+                            CompanyName = company.Name,
+                            StartTime = companyTrip.StartTime,
+                            Price = companyTrip.Price,
+                            CarTypeName = carType.Name,
+                            StationName = station.Name
+                        }).ToListAsync();
+            List<GetAllCompanyTripResDto> list = await query;
+            if (list == null)
+            {
+                throw new Exception(ErrorCode.NOT_FOUND);
+            }
+            return _mapper.Map<List<GetAllCompanyTripResDto>>(list);
+        }
+
+        public async Task<List<GetCompanyTripByTripIdResDto>> GetCompanyTripByTripIdAsync(int id)
+        {
+            _logger.LogInformation($"Get CompanyTrip with TripId: {id}");
+            var query = (from companyTrip in _db.CompanyTrip
+                         join trip in _db.Trip on companyTrip.TripId equals id
+                         join car in _db.Car on companyTrip.CarId equals car.Id
+                         join carType in _db.CarType on companyTrip.CarTypeId equals carType.Id
+                         join station in _db.Station on companyTrip.StationId equals station.Id
+                         join company in _db.Company on companyTrip.CompanyId equals company.Id
+                         where companyTrip.TripId == id
+                         select new GetCompanyTripByTripIdResDto
+                         {
+                             CompanyName = company.Name,
+                             StartTime = companyTrip.StartTime,
+                             Price = companyTrip.Price,
+                             CarTypeName = carType.Name,
+                             StationName = station.Name
+                         }).ToListAsync();
+            List<GetCompanyTripByTripIdResDto> list = await query;
+            if (list == null)
+            {
+                throw new Exception(ErrorCode.NOT_FOUND);
+            }
+            return _mapper.Map<List<GetCompanyTripByTripIdResDto>>(list);
+        }
     }
 }

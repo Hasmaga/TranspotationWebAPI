@@ -10,5 +10,7 @@ namespace TranspotationWebAPI.Repositories
         Task<List<ReadCompanyTripResDto>> GetAllCompanyTripByCompanyIdAsync();
         Task<bool> ChangeStatusCompanyTripByCompanyIdAsync(int id);
         Task<bool> DeleteCompanyTripByCompanyIdAsync(int id);
+        Task<List<GetAllCompanyTripResDto>> GetAllCompanyTripAsync();
+        Task<List<GetCompanyTripByTripIdResDto>> GetCompanyTripByTripIdAsync(int id);
     }
 }
