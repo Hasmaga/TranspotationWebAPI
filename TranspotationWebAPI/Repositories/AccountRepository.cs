@@ -271,5 +271,8 @@ namespace TranspotationAPI.Repositories
             }
             return _mapper.Map<GetUserInfoByIdResDto>(accGet);
         }
+
+        
+
     }
 }

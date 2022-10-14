@@ -170,7 +170,7 @@ namespace TranspotationWebAPI.Repositories
         {
             _logger.LogInformation($"Get CompanyTrip with TripId: {id}");
             var query = (from companyTrip in _db.CompanyTrip
-                         join trip in _db.Trip on companyTrip.TripId equals id
+                         join trip in _db.Trip on companyTrip.TripId equals trip.Id
                          join car in _db.Car on companyTrip.CarId equals car.Id
                          join carType in _db.CarType on companyTrip.CarTypeId equals carType.Id
                          join station in _db.Station on companyTrip.StationId equals station.Id

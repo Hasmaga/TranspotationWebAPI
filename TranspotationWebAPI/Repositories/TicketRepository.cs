@@ -33,6 +33,16 @@ namespace TranspotationWebAPI.Repositories
             return Task.FromResult(result);
         }
 
+        public Task<string> GetAccountRoleByToken()
+        {
+            var result = string.Empty;
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+            }
+            return Task.FromResult(result);
+        }
+
         public async Task<List<GetTicketByAccountResDto>> GetAllTicketByAccount()
         {
             string accEmail = await GetAccountEmailByToken();
@@ -58,6 +68,95 @@ namespace TranspotationWebAPI.Repositories
                 throw new Exception(ErrorCode.REPOSITORY_ERROR);
             }
             return list;
-        }                        
+        }
+
+        public async Task<bool> UpdateTicketByTokenAsync(UpdateTicketByTokenResDto updateTicket, int id)
+        {
+            string accEmail = await GetAccountEmailByToken();
+            if (accEmail != "1")
+            {
+                throw new UnauthorizedAccessException(ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+            _logger.LogInformation($"Update Ticket with AccountEmail: {accEmail}");
+            var ticket = await _mdb.Ticket.FirstOrDefaultAsync(x => x.Id == id);
+            if (ticket == null)
+            {
+                throw new Exception(ErrorCode.REPOSITORY_ERROR);
+            }
+            ticket.Status = updateTicket.Status;
+            ticket.Total = updateTicket.Total;            
+            ticket.SeatName = updateTicket.SeatName;
+            ticket.Description = updateTicket.Description;
+            _mdb.Ticket.Update(ticket);
+            await _mdb.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<Ticket> FindTicketByIdAsync(int id)
+        {
+            _logger.LogInformation($"Find Ticket By Id: {id}");
+            Ticket ticket = await _mdb.Ticket.FindAsync(id);
+            if(ticket == null) 
+            {
+                _logger.LogInformation($"Ticket Not Found");
+                throw new KeyNotFoundException(ErrorCode.NOT_FOUND);
+            }
+            return ticket;
+        }
+
+        public async Task DeleteTicketByTokenAsync(int id)
+        {
+            var role = await GetAccountRoleByToken();
+            if (role != "1")
+            {
+                throw new Exception(ErrorCode.ACCOUNT_BLOCKED);
+            }
+            Ticket ticket = await this.FindTicketByIdAsync(id);
+            if (ticket!= null)
+            {
+                _mdb.Ticket.Remove(ticket);
+            }
+            else
+            {
+                _logger.LogError($"Account not found");
+                throw new KeyNotFoundException(ErrorCode.NOT_FOUND);
+            }
+            await _mdb.SaveChangesAsync();
+        }
+
+        public async Task<List<GetAllTicketByAccountWithStatusResDto>> GetAllTicketByAccountWithStatus(bool status)
+        {
+            string accEmail = await GetAccountEmailByToken();
+            if (accEmail == null)
+            {
+                throw new UnauthorizedAccessException(ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+            _logger.LogInformation($"Get Ticket with AccountEmail: {accEmail}");
+            var query = from r in _mdb.Ticket
+                        join c in _mdb.Account on r.AccountId equals c.Id
+                        join t in _mdb.CompanyTrip on r.CompanyTripId equals t.Id
+                        join dt in _mdb.Company on t.CompanyId equals dt.Id
+                        join ct in _mdb.CarType on t.CarTypeId equals ct.Id
+                        join mt in _mdb.Trip on t.TripId equals mt.Id                        
+                        where c.Email == accEmail && r.Status == status
+                        select new GetAllTicketByAccountWithStatusResDto
+                        {
+                            Status = r.Status,
+                            Total = r.Total,
+                            CompanyName = dt.Name,
+                            CarTypeName = ct.Name,
+                            StartTime = t.StartTime,
+                            FromLocation = mt.From.Name,
+                            ToLocation = mt.To.Name,
+                            SeatName = r.SeatName,
+                            Description = r.Description
+                        };
+            var list = await query.ToListAsync();
+            if (list == null)
+            {
+                throw new Exception(ErrorCode.REPOSITORY_ERROR);
+            }
+            return list;
+        }
     }
 }
