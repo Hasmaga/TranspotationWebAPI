@@ -82,12 +82,12 @@ namespace TranspotationWebAPI.Repositories
 
         public async Task<bool> UpdateTicketByTokenAsync(UpdateTicketByTokenResDto updateTicket, int id)
         {
-            string accEmail = await GetAccountEmailByToken();
-            if (accEmail != "1")
+            var role = await GetAccountRoleByToken();
+            if (role != "1")
             {
-                throw new UnauthorizedAccessException(ErrorCode.ACCOUNT_NOT_FOUND);
+                throw new Exception(ErrorCode.ACCOUNT_BLOCKED);
             }
-            _logger.LogInformation($"Update Ticket with AccountEmail: {accEmail}");
+            _logger.LogInformation($"Update Ticket by admin");
             var ticket = await _mdb.Ticket.FirstOrDefaultAsync(x => x.Id == id);
             if (ticket == null)
             {
