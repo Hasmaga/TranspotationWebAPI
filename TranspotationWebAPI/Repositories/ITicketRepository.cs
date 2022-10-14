@@ -7,9 +7,13 @@ namespace TranspotationWebAPI.Repositories
     {
         Task<List<GetTicketByAccountResDto>> GetAllTicketByAccount();
         Task<string> GetAccountEmailByToken();
+        Task<string> GetAccountRoleByToken();
+        Task<string> GetAccountIdByToken();        
         Task<bool> UpdateTicketByTokenAsync(UpdateTicketByTokenResDto updateTicket, int id);
         Task DeleteTicketByTokenAsync(int id);
         Task<Ticket> FindTicketByIdAsync(int id);
         Task<List<GetAllTicketByAccountWithStatusResDto>> GetAllTicketByAccountWithStatus(bool status);
+        Task<bool> CreateTicketByAccount(CreateTicketByAccountResDto createTicket);
+
     }
 }

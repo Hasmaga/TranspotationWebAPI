@@ -43,6 +43,16 @@ namespace TranspotationWebAPI.Repositories
             return Task.FromResult(result);
         }
 
+        public Task<string> GetAccountIdByToken()
+        {
+            var result = string.Empty;
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
+            }
+            return Task.FromResult(result);
+        }    
+
         public async Task<List<GetTicketByAccountResDto>> GetAllTicketByAccount()
         {
             string accEmail = await GetAccountEmailByToken();
@@ -157,6 +167,21 @@ namespace TranspotationWebAPI.Repositories
                 throw new Exception(ErrorCode.REPOSITORY_ERROR);
             }
             return list;
+        }
+
+        public async Task<bool> CreateTicketByAccount(CreateTicketByAccountResDto createTicket)
+        {
+            int accountId = int.Parse(await GetAccountIdByToken());
+            
+            if (accountId == 0)
+            {
+                throw new UnauthorizedAccessException(ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+            _logger.LogInformation($"Create Ticket with AccountEmail: {accountId}");
+            Ticket ticket = new Ticket(true, createTicket.Total, accountId, createTicket.CompanyTripId, createTicket.SeatName, createTicket.Description);
+            _mdb.Ticket.Add(ticket);
+            await _mdb.SaveChangesAsync();
+            return true;
         }
     }
 }

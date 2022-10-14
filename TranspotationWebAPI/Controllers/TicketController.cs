@@ -79,5 +79,26 @@ namespace TranspotationWebAPI.Controllers
             }
         }
 
+        // Create Ticket
+        [HttpPost, Authorize]
+        [Route("CreateTicket")]
+        public async Task<ActionResult> CreateTicketAsync([FromBody] CreateTicketByAccountResDto ticket)
+        {
+            _logger.LogInformation("Create Ticket");
+            try
+            {
+                bool result = await _ticketRepository.CreateTicketByAccount(ticket);
+                if (result)
+                {
+                    return Ok();
+                }
+                return NotFound(ErrorCode.REPOSITORY_ERROR);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.REPOSITORY_ERROR);
+            }
+        }
     }
 }
