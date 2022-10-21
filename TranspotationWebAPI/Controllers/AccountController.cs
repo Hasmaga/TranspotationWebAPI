@@ -193,14 +193,14 @@ namespace TranspotationAPI.Controllers
         }
 
         //Get User Info 
-        [HttpGet, AllowAnonymous]
+        [HttpGet, Authorize]
         [Route("GetUserInfo")]
-        public async Task<ActionResult<GetUserInfoByIdResDto>> GetUserInfoByIdAsync(int id)
+        public async Task<ActionResult<GetUserInfoByIdResDto>> GetUserInfoByIdAsync()
         {
             _logger.LogInformation($"Get user by id API");
             try
             {
-                GetUserInfoByIdResDto acc = await _accountRepository.GetUserInfoByIdAsync(id);
+                GetUserInfoByIdResDto acc = await _accountRepository.GetUserInfoByIdAsync();
                 return Ok(acc);
             } 
             catch (Exception ex)

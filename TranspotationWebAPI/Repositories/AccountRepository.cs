@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -25,12 +26,15 @@ namespace TranspotationAPI.Repositories
 
         private readonly IConfiguration _configuration;
 
-        public AccountRepository(ApplicationDbContext db, IMapper mapper, ILogger<AccountRepository> logger, IConfiguration configuration)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public AccountRepository(ApplicationDbContext db, IMapper mapper, ILogger<AccountRepository> logger, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _db = db;
             _mapper = mapper;
             _logger = logger;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }        
 
         // Find Account By Id
@@ -260,19 +264,17 @@ namespace TranspotationAPI.Repositories
             return _mapper.Map<UpdateInfoUserResDto>(accUpdate);
         }
 
-        public async Task<GetUserInfoByIdResDto> GetUserInfoByIdAsync(int id)
+        public async Task<GetUserInfoByIdResDto> GetUserInfoByIdAsync()
         {
-            _logger.LogInformation($"Get user info by id: {id}");
-            Account accGet = await FindAccountByIdAsync(id);
-            if (accGet == null)
+            int id = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Sid).Value);
+            if (id == 0)
             {
-                _logger.LogInformation($"User Id: {id} not found at {DateTime.UtcNow.ToLongTimeString()}");
-                throw new KeyNotFoundException(ErrorCode.USER_NOT_FOUND);
+                _logger.LogError($"Account not found");
+                throw new KeyNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND);
             }
-            return _mapper.Map<GetUserInfoByIdResDto>(accGet);
+            _logger.LogInformation($"Get info user with Id: {id}.");
+            Account acc = await FindAccountByIdAsync(id);
+            return _mapper.Map<GetUserInfoByIdResDto>(acc);
         }
-
-        
-
     }
 }
