@@ -185,5 +185,58 @@ namespace TranspotationWebAPI.Controllers
                 return NotFound(ErrorCode.GET_COMPANY_TRIP_FAIL);
             }
         }
+
+        //Get Company Trip By Company Id
+        [HttpGet]
+        [Route("GetTotalSeatByCompanyId")]
+        public async Task<int> GetTotalSeatByCompanyIdAsync(int id)
+        {
+            _logger.LogInformation("Get Total Seat By Company Id");
+            int totalSeat = await _companyTripRepository.GetTotalSeatByCompanyIdAsync(id);
+            if (totalSeat == 0)
+            {
+                throw new Exception("Get Total Seat By Company Id Fail");
+            }
+            return totalSeat;
+        }
+
+        [HttpGet]
+        [Route("GetCompanyTripByLoFromAndLoTo")]
+        public async Task<List<GetAllCompanyTripResDto>> GetCompanyTripByLoFromAndLoToAsync(string loFrom, string loTo)
+        {            
+            _logger.LogInformation("Get Company Trip By Lo From And Lo To");
+            List<GetAllCompanyTripResDto> companyTrip = await _companyTripRepository.GetCompanyTripFromLocationNameFromAndToAsync(loFrom, loTo);
+            if (companyTrip == null)
+            {
+                throw new Exception("Get Company Trip By Lo From And Lo To Fail");
+            }
+            return companyTrip;            
+        }
+
+        [HttpGet]
+        [Route("GetSeatListByCompanyId")]
+        public async Task<List<string>> GetSeatListByCompanyIdAsync(int id)
+        {
+            _logger.LogInformation("Get Seat List By Company Id");
+            List<string> seatList = await _companyTripRepository.CreateSeatListAsync(id);
+            if (seatList == null)
+            {
+                throw new Exception("Get Seat List By Company Id Fail");
+            }
+            return seatList;
+        }
+
+        [HttpGet]
+        [Route("GetLocationName")]        
+        public async Task<List<string>> GetLocationNameAsync()
+        {
+            _logger.LogInformation("Get Location Name");
+            List<string> locationName = await _companyTripRepository.GetLocationAsync();
+            if (locationName == null)
+            {
+                throw new Exception("Get Location Name Fail");
+            }
+            return locationName;
+        }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Validations;
+using System.Diagnostics.Metrics;
 using System.Security.Claims;
+using System.Security.Permissions;
 using TranspotationAPI.DbContexts;
 using TranspotationAPI.Enum;
 using TranspotationWebAPI.Model;
@@ -41,7 +44,7 @@ namespace TranspotationWebAPI.Repositories
                 throw new UnauthorizedAccessException(ErrorCode.THIS_ACCOUNT_IS_NOT_AUTH);
             }
             _logger.LogInformation($"Create CompanyTrip with CompanyId: {companyId}");
-            CompanyTrip newTrip = new CompanyTrip(trip.TripId, trip.CarId, companyId, true, trip.StartTime, trip.Price, trip.CarTypeId, trip.StationId);
+            CompanyTrip newTrip = new CompanyTrip(trip.TripId, trip.CarId, companyId, true, trip.StartDateTime,  trip.Price, trip.CarTypeId, trip.StationId, trip.TotalSeat);
             if (newTrip == null)
             {
                 throw new Exception(ErrorCode.REPOSITORY_ERROR);
@@ -70,7 +73,7 @@ namespace TranspotationWebAPI.Repositories
             }
             updateTrip.TripId = trip.TripId;
             updateTrip.CarId = trip.CarId;
-            updateTrip.StartTime = trip.StartTime;
+            updateTrip.StartDateTime = trip.StartDateTime;
             updateTrip.Price = trip.Price;
             updateTrip.CarTypeId = trip.CarTypeId;
             updateTrip.StationId = trip.StationId;
@@ -149,11 +152,12 @@ namespace TranspotationWebAPI.Repositories
                         join company in _db.Company on companyTrip.CompanyId equals company.Id
                         select new GetAllCompanyTripResDto
                         {
+                            Id = companyTrip.Id,
                             LocationFrom = trip.From.Name,
                             LoactionTo = trip.To.Name,
                             CarName = car.Name,
                             CompanyName = company.Name,
-                            StartTime = companyTrip.StartTime,
+                            StartDateTime = companyTrip.StartDateTime,
                             Price = companyTrip.Price,
                             CarTypeName = carType.Name,
                             StationName = station.Name
@@ -179,7 +183,7 @@ namespace TranspotationWebAPI.Repositories
                          select new GetCompanyTripByTripIdResDto
                          {
                              CompanyName = company.Name,
-                             StartTime = companyTrip.StartTime,
+                             StartDateTime = companyTrip.StartDateTime,
                              Price = companyTrip.Price,
                              CarTypeName = carType.Name,
                              StationName = station.Name
@@ -191,5 +195,77 @@ namespace TranspotationWebAPI.Repositories
             }
             return _mapper.Map<List<GetCompanyTripByTripIdResDto>>(list);
         }
+
+        public async Task<CompanyTrip>FindCompanyTripByIdAsync(int id)
+        {
+            _logger.LogInformation($"Find CompanyTrip with Id: {id}");
+            CompanyTrip trip = await _db.CompanyTrip.FindAsync(id);
+            if (trip == null)
+            {
+                throw new Exception(ErrorCode.NOT_FOUND);
+            }
+            return trip;
+        }   
+        
+        public async Task<int> GetTotalSeatByCompanyIdAsync(int id)
+        {
+            _logger.LogInformation($"Get Total Seat with CompanyId: {id}");
+            CompanyTrip companyTrip = await this.FindCompanyTripByIdAsync(id);
+            if (companyTrip == null)
+            {
+                throw new Exception(ErrorCode.NOT_FOUND);
+            }
+            int totalSeat = (int)companyTrip.TotalSeat;
+            return totalSeat;
+        }
+
+        public async Task<List<GetAllCompanyTripResDto>> GetCompanyTripFromLocationNameFromAndToAsync(string loFrom, string loTo)
+        {
+            _logger.LogInformation($"");
+            var query = from r in _db.CompanyTrip
+                        join t in _db.Trip on r.TripId equals t.Id
+                        join f in _db.Location on t.From_Id equals f.Id
+                        join l in _db.Location on t.To_Id equals l.Id
+                        where f.Name == loFrom && l.Name == loTo
+                        select new GetAllCompanyTripResDto
+                        {
+                            Id = r.Id,
+                            LocationFrom = f.Name,
+                            LoactionTo = l.Name,
+                            StartDateTime = r.StartDateTime,
+                            Price = r.Price,
+                            CarTypeName = r.CarType.Name,
+                            StationName = r.Station.Name,
+                            CompanyName = r.Company.Name
+                        };       
+            var list = await query.ToListAsync();
+            return list;
+        }
+
+        public async Task<List<string>> CreateSeatListAsync(int companyTripId)
+        {
+            if (companyTripId == 0)
+            {
+                throw new Exception(ErrorCode.COMPANY_TRIP_NOT_FOUND);
+            }
+            CompanyTrip companyTrip = await this.FindCompanyTripByIdAsync(companyTripId);
+            _logger.LogInformation($"Create Seat List");
+            List<string> list = new List<string>();
+            for (int i = 1; i <= (companyTrip.TotalSeat) / 2; i++)            
+                list.Add("A" + i.ToString());            
+            for (int i = 1; i <= (companyTrip.TotalSeat) / 2; i++)           
+                list.Add("B" + i.ToString());            
+            return list;
+        }
+
+        public async Task<List<string>> GetLocationAsync()
+        {            
+            _logger.LogInformation($"Get Location");
+            var query = from r in _db.Location
+                      select r.Name;
+            var list = await query.ToListAsync();
+            return list;            
+        }
+        
     }
 }

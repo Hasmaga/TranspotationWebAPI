@@ -155,7 +155,7 @@ namespace TranspotationWebAPI.Repositories
                             Total = r.Total,
                             CompanyName = dt.Name,
                             CarTypeName = ct.Name,
-                            StartTime = t.StartTime,
+                            StartDateTime = t.StartDateTime,
                             FromLocation = mt.From.Name,
                             ToLocation = mt.To.Name,
                             SeatName = r.SeatName,
@@ -178,10 +178,28 @@ namespace TranspotationWebAPI.Repositories
                 throw new UnauthorizedAccessException(ErrorCode.ACCOUNT_NOT_FOUND);
             }
             _logger.LogInformation($"Create Ticket with AccountEmail: {accountId}");
-            Ticket ticket = new Ticket(true, createTicket.Total, accountId, createTicket.CompanyTripId, createTicket.SeatName, createTicket.Description);
+            Ticket ticket = new Ticket
+            (
+                true,
+                _mdb.CompanyTrip.Where(x => x.Id == createTicket.CompanyTripId).Select(x => x.Price).FirstOrDefault(),
+                accountId,
+                createTicket.CompanyTripId,
+                createTicket.SeatName,
+                createTicket.Description                
+            );
             _mdb.Ticket.Add(ticket);
             await _mdb.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<List<string>> GetSeatSelectedByCompanyTripId(int companyTripId)
+        {
+            _logger.LogInformation($"Get Seat Selected By Company Trip Id: {companyTripId}");
+            var query = from r in _mdb.Ticket
+                        where r.CompanyTripId == companyTripId
+                        select r.SeatName;
+            var list = await query.ToListAsync();            
+            return list;
         }
     }
 }

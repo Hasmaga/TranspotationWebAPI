@@ -6,7 +6,7 @@
         public double? Total { get; set; }
         public string CompanyName { get; set; }
         public string CarTypeName { get; set; }
-        public DateTime? StartTime { get; set; }
+        public DateTime? StartDateTime { get; set; }
         public string FromLocation { get; set; }
         public string ToLocation { get; set; }
         public string SeatName { get; set; }

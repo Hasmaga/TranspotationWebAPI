@@ -171,14 +171,14 @@ namespace TranspotationAPI.Controllers
         }
 
         //Update user
-        [HttpPut, AllowAnonymous]
+        [HttpPut, Authorize]
         [Route("UpdateUser")]
-        public async Task<ActionResult<CommonResDto>> UpdateUserAsync([FromBody] UpdateInfoUserResDto accUpdate, int id)
+        public async Task<ActionResult<CommonResDto>> UpdateUserAsync([FromBody] UpdateInfoUserResDto accUpdate)
         {
             _logger.LogInformation($"Update user API");
             try
             {
-                UpdateInfoUserResDto acc = await _accountRepository.UpdateUserInfoAsync(accUpdate, id);
+                UpdateInfoUserResDto acc = await _accountRepository.UpdateUserInfoAsync(accUpdate);
                 _resonse.Result = acc;
                 _resonse.IsSuccess = true;
                 _resonse.DisplayMessage = "Update user successfully";

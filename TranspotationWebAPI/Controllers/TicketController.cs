@@ -100,5 +100,23 @@ namespace TranspotationWebAPI.Controllers
                 return NotFound(ErrorCode.REPOSITORY_ERROR);
             }
         }
+
+        //Get Seat Selected By Company Trip Id
+        [HttpGet]
+        [Route("GetSeatSelectedByCompanyTripId")]
+        public async Task<ActionResult> GetSeatSelectedByCompanyTripId(int companyTripId)
+        {
+            _logger.LogInformation("Get Seat Selected By Company Trip Id");
+            try
+            {
+                List<string> seats = await _ticketRepository.GetSeatSelectedByCompanyTripId(companyTripId);
+                return Ok(seats);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.REPOSITORY_ERROR);
+            }
+        }
     }
 }

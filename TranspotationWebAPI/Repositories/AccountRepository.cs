@@ -240,25 +240,27 @@ namespace TranspotationAPI.Repositories
                 throw new KeyNotFoundException(ErrorCode.EMAIL_EXIST);
             }
         }
-
-        public async Task<UpdateInfoUserResDto> UpdateUserInfoAsync(UpdateInfoUserResDto user, int Id)
+        
+        public async Task<UpdateInfoUserResDto> UpdateUserInfoAsync(UpdateInfoUserResDto user)
         {
-            _logger.LogInformation($"Update Info user with Id: {Id}.");
-            Account accUpdate = await FindAccountByIdAsync(Id);
+            int result = 0;
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                result = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid));
+            }
+            else{
+                throw new UnauthorizedAccessException(ErrorCode.THIS_ACCOUNT_IS_NOT_AUTH);
+	        }
+            _logger.LogInformation($"Update Info user with Id: {result}.");
+            Account accUpdate = await FindAccountByIdAsync(result);
             if (user.Name != null)
             {
                 accUpdate.Name = user.Name;
             }
-            if (user.Email!=null)
+            if (user.Phone !=null)
             {
-                accUpdate.Email = user.Email;
-            }
-            if (user.Password != null)
-            {
-                CreatePasswordHash(user.Password, out byte[] passwordHash, out byte[] passwordSalt);
-                accUpdate.PasswordHash = Convert.ToBase64String(passwordHash);
-                accUpdate.PasswordSalt = Convert.ToBase64String(passwordSalt);
-            }
+                accUpdate.Phone = user.Phone;
+            }           
             _db.Account.Update(accUpdate);
             await _db.SaveChangesAsync();            
             return _mapper.Map<UpdateInfoUserResDto>(accUpdate);

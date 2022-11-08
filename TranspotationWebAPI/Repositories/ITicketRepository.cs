@@ -14,6 +14,6 @@ namespace TranspotationWebAPI.Repositories
         Task<Ticket> FindTicketByIdAsync(int id);
         Task<List<GetAllTicketByAccountWithStatusResDto>> GetAllTicketByAccountWithStatus(bool status);
         Task<bool> CreateTicketByAccount(CreateTicketByAccountResDto createTicket);
-
+        Task<List<string>> GetSeatSelectedByCompanyTripId(int companyTripId);
     }
 }
