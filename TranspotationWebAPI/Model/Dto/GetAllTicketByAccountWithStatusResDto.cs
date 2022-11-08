@@ -2,6 +2,7 @@
 {
     public class GetAllTicketByAccountWithStatusResDto
     {
+        public int Id { get; set; }
         public bool Status { get; set; }
         public double? Total { get; set; }
         public string CompanyName { get; set; }

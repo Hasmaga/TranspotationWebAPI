@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TranspotationAPI.DbContexts;
@@ -147,10 +148,11 @@ namespace TranspotationWebAPI.Repositories
                         join t in _mdb.CompanyTrip on r.CompanyTripId equals t.Id
                         join dt in _mdb.Company on t.CompanyId equals dt.Id
                         join ct in _mdb.CarType on t.CarTypeId equals ct.Id
-                        join mt in _mdb.Trip on t.TripId equals mt.Id                        
+                        join mt in _mdb.Trip on t.TripId equals mt.Id
                         where c.Email == accEmail && r.Status == status
                         select new GetAllTicketByAccountWithStatusResDto
                         {
+                            Id = r.Id,
                             Status = r.Status,
                             Total = r.Total,
                             CompanyName = dt.Name,
@@ -200,6 +202,37 @@ namespace TranspotationWebAPI.Repositories
                         select r.SeatName;
             var list = await query.ToListAsync();            
             return list;
+        }
+
+        public async Task<GetTicketByTicketId> GetTicketByTicketId(int id)
+        {
+            _logger.LogInformation($"Get Ticket By Ticket Id: {id}");
+            var query = from r in _mdb.Ticket
+                        join c in _mdb.Account on r.AccountId equals c.Id
+                        join t in _mdb.CompanyTrip on r.CompanyTripId equals t.Id
+                        join dt in _mdb.Company on t.CompanyId equals dt.Id
+                        join ct in _mdb.CarType on t.CarTypeId equals ct.Id
+                        join mt in _mdb.Trip on t.TripId equals mt.Id
+                        where r.Id == id
+                        select new GetTicketByTicketId
+                        {
+                            TicketId = r.Id,
+                            Status = r.Status,  
+                            Total = r.Total,
+                            CompanyName = dt.Name,
+                            SeatName = r.SeatName,
+                            Description = r.Description,
+                            LocationFrom = mt.From.Name,
+                            LocationTo = mt.To.Name,
+                            StartDateTime = t.StartDateTime,
+                            CarTypeName = ct.Name,
+                        };
+            var value = await query.FirstOrDefaultAsync();
+            if (value == null)
+            {
+                throw new Exception(ErrorCode.REPOSITORY_ERROR);
+            }
+            return value;
         }
     }
 }

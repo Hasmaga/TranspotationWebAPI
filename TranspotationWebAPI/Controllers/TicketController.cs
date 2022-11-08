@@ -118,5 +118,22 @@ namespace TranspotationWebAPI.Controllers
                 return NotFound(ErrorCode.REPOSITORY_ERROR);
             }
         }
+
+        [HttpGet]
+        [Route("GetTicketByTicketId")]
+        public async Task<ActionResult> GetTicketByTicketId(int id)
+        {
+            _logger.LogInformation("Get Ticket By Ticket Id");
+            try
+            {
+                GetTicketByTicketId ticket = await _ticketRepository.GetTicketByTicketId(id);
+                return Ok(ticket);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return NotFound(ErrorCode.REPOSITORY_ERROR);
+            }
+        }
     }
 }
